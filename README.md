@@ -9,9 +9,9 @@ Project requirements can be found in our [REQUIREMENTS.md](REQUIREMENTS.md) file
 Project rules and contribution guidelines can be found in our [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## Authors
-* **Nicholas Ruan** - nr1461@nyu.edu\
-* **Esther Sun** - es4271@nyu.edu\
-* **Justin Do** - gd997@nyu.edu\
+* **Nicholas Ruan** - nr1461@nyu.edu
+* **Esther Sun** - es4271@nyu.edu
+* **Justin Do** - gd997@nyu.edu
 * **Yuankai Shan** - ys1623@nyu.edu
 
 ## License
