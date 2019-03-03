@@ -1,0 +1,3 @@
+rootProject.name = 'toiletfinder'
+
+include ':app'
