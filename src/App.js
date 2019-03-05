@@ -1,47 +1,16 @@
-import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, StyleSheet, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-export default class App extends Component {
-  //A function that simply pops up an alert upon clicking a button
-  locationClick() {
-    Alert.alert('You are currently at ...')
-  }
-  rankingClick() {
-    Alert.alert("Rank toilets by distance")
-  }
+import HomeScreen from './screens/HomeScreen';
+import AddLocationScreen from './screens/AddLocationScreen';
 
-  render() {
-    return (
-      <View style={styles.container}>
-        //Button that would show current location
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={this.locationClick}
-            title="Current location"
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={this.rankingClick}
-            title="Toilets by distance"
-          />
-        </View>
-      </View>
-    );
-  }
-}
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    margin: 20
-  },
+const BottomTabNavigator = createBottomTabNavigator({
+  Home: { screen: HomeScreen },
+  Add: { screen: AddLocationScreen },
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => App);
+const App = createAppContainer(BottomTabNavigator);
+
+export default App;
+
