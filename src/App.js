@@ -1,15 +1,36 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Alert, AppRegistry, Button, StyleSheet, View } from 'react-native';
 
-export default class App extends React.Component {
+export default class App extends Component {
+  //A function that simply pops up an alert upon clicking a button
+  locationClick() {
+    Alert.alert('You are currently at ...')
+  }
+  rankingClick() {
+    Alert.alert("Rank toilets by distance")
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        //Button that would show current location
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={this.locationClick}
+            title="Current location"
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={this.rankingClick}
+            title="Toilets by distance"
+          />
+        </View>
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -18,4 +39,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonContainer: {
+    margin: 20
+  },
 });
+
+AppRegistry.registerComponent('AwesomeProject', () => App);
