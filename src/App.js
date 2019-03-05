@@ -1,15 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-    );
-  }
-}
+import HomeScreen from './screens/HomeScreen';
+import AddLocationScreen from './screens/AddLocationScreen';
+
+const BottomTabNavigator = createBottomTabNavigator({
+  Home: { screen: HomeScreen },
+  Add: { screen: AddLocationScreen },
+});
+
+const App = createAppContainer(BottomTabNavigator);
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
