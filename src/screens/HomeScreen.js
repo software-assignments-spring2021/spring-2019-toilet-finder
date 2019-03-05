@@ -3,7 +3,10 @@ import {
 	View,
 	StyleSheet,
 	Button,
-	Alert
+	Alert,
+  Text,
+  Image,
+  AppRegistry
 } from 'react-native';
 
 class HomeScreen extends Component {
@@ -18,6 +21,8 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <ToiletImage />
+        <Text>Toilet Finder</Text>
       	<View style={styles.buttonContainer}>
           <Button
             onPress={this._locationClick}
@@ -36,6 +41,10 @@ class HomeScreen extends Component {
 }
 
 export default HomeScreen;
+
+const ToiletImage = () => (
+   <Image source = {require('./toilet.jpg')} />
+)
 
 const styles = StyleSheet.create({
   container: {
