@@ -16,5 +16,13 @@
     "istanbul": "^0.4.5",
     "mocha": "^6.0.2"
   },
-  "private": true
+  "private": true,
+  "name": "src",
+  "version": "1.0.0",
+  "directories": {
+    "test": "tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
