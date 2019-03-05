@@ -5,7 +5,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
-    "test": "nyc mocha"
+    "test": "jest"
   },
   "dependencies": {
     "expo": "^32.0.0",
@@ -16,7 +16,9 @@
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
     "istanbul": "^0.4.5",
-    "mocha": "^6.0.2"
+    "jest": "^24.1.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0"
   },
   "private": true,
   "name": "src",
