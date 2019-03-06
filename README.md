@@ -10,9 +10,13 @@ First make sure you must have npm installed.
 Second obtain all files in this repository by cloning, forking, or downloading the .zip file. Options can be found under the "Clone or Download" button.
 
 Once you have all files on your computer ideally in a folder named "toilet-finder" (this folder can be renamed), open your terminal and cd into the src folder. The directory should look something like 
+
 ```...\...\toilet-finder\src```
+
 Once you are in the src folder run the command
+
 ```npm install```
+
 This should install all project dependencies.
 
 Currently there is no .apk or iOS app file available. This application is still in the build phase and in order to run this app on your phone you will need to install Expo. Instructions for running this app using expo can be found on the React-Native getting started page here 
