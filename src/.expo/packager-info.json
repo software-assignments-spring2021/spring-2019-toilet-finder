@@ -3,7 +3,7 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": "https://sd-hrt.anonymous.src.exp.direct",
-  "packagerNgrokUrl": "https://packager.sd-hrt.anonymous.src.exp.direct",
-  "ngrokPid": 75749
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
