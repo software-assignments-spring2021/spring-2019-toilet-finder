@@ -23,7 +23,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.toiletfinder"
+
+    },
+    "android": {
+      "package": "com.toiletfinder",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyClf3uBNve3WhiBo3OoEzgVzu6PPmf6_7I" }
+      }
     }
   }
 }
