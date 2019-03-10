@@ -23,12 +23,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.toiletfinder"
+
     },
     "android": {
-      "package": "com.codingmechanic.mapcuny",
+      "package": "com.toiletfinder",
       "config": {
-        "googleMaps": { "apiKey": "AIzaSyBj-3i8iqBapV9OoaDi3mlM0-OJb9GVR28" }
+        "googleMaps": { "apiKey": "AIzaSyClf3uBNve3WhiBo3OoEzgVzu6PPmf6_7I" }
       }
     }
   }
