@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,7 @@ import {
   Button,
   Alert,
   Platform,
-  TouchableOpacity } from "react-native";
+  TouchableOpacity } from 'react-native';
 import MapView from 'react-native-maps';
 import { Constants, Location, Permissions } from 'expo';
 
@@ -69,7 +69,7 @@ export default class App extends React.Component {
         />
       </View>
     );
-  }
+      }
 }
 
 const styles = StyleSheet.create({
