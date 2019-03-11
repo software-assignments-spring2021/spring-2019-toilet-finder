@@ -33,3 +33,12 @@ it('check that _locationClick function produces an alert', () => {
 });
 
 //Justin's Tests
+test('Sort distance from closest to farthest', () => {
+  expect(sort([5,4,3,2,1])).toEqual([1,2,3,4,5]);
+});
+test('Sort distance from closest to farthest', () => {
+  expect(sort([1,2,3])).toEqual([1,2,3]);
+});
+test('If there are no nearby bathrooms, state that there are none nearby', () => {
+  expect(sort([])).toEqual("There are no bathrooms near you");
+});
