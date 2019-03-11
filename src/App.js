@@ -70,10 +70,6 @@ export default class App extends React.Component {
       </View>
     );
   }
-
-  handlePress = () => {
-    Alert.alert("you tapped the button!");
-  }
 }
 
 const styles = StyleSheet.create({
