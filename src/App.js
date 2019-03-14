@@ -16,6 +16,16 @@ export default class App extends React.Component {
     errorMessage: null,
   };
 
+//Demo function for sorting by distance later
+  sort(array){
+    if (array.length === 0){
+      return "There are no bathrooms near you";
+    }
+    array.sort(function(a, b){return a - b});
+    return array;
+  }
+
+  //Code being used for reac Native
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
