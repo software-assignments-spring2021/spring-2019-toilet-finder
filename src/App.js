@@ -7,7 +7,7 @@ import {
   Alert,
   Platform,
   TouchableOpacity } from 'react-native';
-import MapView from 'react-native-maps';
+import { MapView } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
 export default class App extends React.Component {
@@ -67,6 +67,9 @@ export default class App extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
           }}
+          //This part shows the user location with a blue marker
+          region={this.props.coordinate}
+          showsUserLocation={true}
         ></MapView>
         <Button
           onPress={() => {
