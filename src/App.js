@@ -1,96 +1,49 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Alert,
-  Platform,
-  TouchableOpacity } from 'react-native';
-import { MapView } from "expo";
-import { Constants, Location, Permissions } from 'expo';
+var AWS = require('aws-sdk')
 
-export default class App extends React.Component {
-  state = {
-    location: null,
-    errorMessage: null,
-  };
+import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-//Demo function for sorting by distance later
-  sort(array){
-    if (array.length === 0){
-      return "There are no bathrooms near you";
-    }
-    array.sort(function(a, b){return a - b});
-    return array;
-  }
+import HomeScreen from './screens/HomeScreen';
+import AddLocationScreen from './screens/AddLocationScreen';
 
-  //Code being used for reac Native
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Error with Android Emulator, try on your device',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
-
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
-  };
-
-  render() {
-
-    let text = "Loading";
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.location) {
-      text = JSON.stringify(this.state.location);
-    }
-    console.log(text);
-    return (
-      <View style={{flex:1}}>
-        <MapView
-          style={styles.map}
-          provider="google"
-          initialRegion={{
-            latitude: 40.76727216,
-            longitude: -73.99392888,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
-          //This part shows the user location with a blue marker
-          region={this.props.coordinate}
-          showsUserLocation={true}
-        ></MapView>
-        <Button
-          onPress={() => {
-            if (Location.hasServicesEnabledAsync())
-              Alert.alert(text);
-          }}
-          style={styles.findButton}
-          title="Find The Nearest Bathroom"
-          color="red"
-        />
-      </View>
-    );
-      }
-}
-
-const styles = StyleSheet.create({
-  findButton: {
-    // Add styles to the search button
-  },
-  map: {
-    zIndex: -1,
-    flex: 1
-  },
+const BottomTabNavigator = createBottomTabNavigator({
+  Home: { screen: HomeScreen },
+  Add: { screen: AddLocationScreen },
 });
+
+const App = createAppContainer(BottomTabNavigator);
+
+export default App;
+
+// Initialize the Amazon Cognito credentials provider
+AWS.config.region = 'us-east-1'; // Region
+var creds = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-1:e7994f82-231f-43db-9a9b-e1868280592f',
+});
+
+AWS.config.credentials = creds;
+
+var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+// var params = {
+//   TableName: "test",
+//   Item: {
+//     "item": "connection established"
+//   }
+// }
+
+// dynamodb.putItem(params, (err, data) => {
+//   if (err) {
+//     console.error("Unable to add item. ");
+//   } else {
+//     console.log("Adding item:");
+//   }
+// })
+
+// ddb.listTables({Limit: 10}, function(err, data) {
+//   if (err) {
+//     console.log("Error", err.code);
+//   } else {
+//     console.log("Table names are ", data.TableNames);
+//   }
+// });
+
