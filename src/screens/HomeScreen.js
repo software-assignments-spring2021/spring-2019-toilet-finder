@@ -10,11 +10,26 @@ import {
 import { MapView } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
+//Set the initial region of the map to NYC
+const initialRegion = {
+  latitude: 40.76727216,
+  longitude: -73.99392888,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421
+}
+
 class HomeScreen extends React.Component {
-  state = {
-    location: null,
-    errorMessage: null,
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+      //State of the initial region
+      region:{initialRegion},
+      location: null,
+      errorMessage: null,
+      //Locations of bathrooms to be stored
+      markers:[]
+    };
+  }
 
 //Demo function for sorting by distance later
   sort(array){
@@ -34,6 +49,31 @@ class HomeScreen extends React.Component {
     } else {
       this._getLocationAsync();
     }
+  }
+
+  componentDidMount() {
+
+    function getLocation(){
+      if(navigator.geolocation){
+        return navigator.geolocation.getCurrentPosition(success);
+      }
+    }
+  
+    function success(position){
+      coordinate = position.coords;
+      console.log(coordinate)
+      return coordinate;
+    }
+
+    navigator.geolocation.getCurrentPosition (
+      (position) => { alert("value:" + getLocation()) },
+      (error)    => { alert("Failed to mount") },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 10000
+      }
+    )
   }
 
   _getLocationAsync = async () => {
@@ -61,16 +101,13 @@ class HomeScreen extends React.Component {
         <MapView
           style={styles.map}
           provider="google"
-          initialRegion={{
-            latitude: 40.76727216,
-            longitude: -73.99392888,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
           //This part shows the user location with a blue marker
           region={this.props.coordinate}
           showsUserLocation={true}
-        ></MapView>
+          //Initial region specified on the map
+          initialRegion={initialRegion}
+        >
+        </MapView>
         <Button
           onPress={() => {
             if (Location.hasServicesEnabledAsync())
