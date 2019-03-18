@@ -10,14 +10,6 @@ import {
 import { MapView } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
-//Set the initial default region of the map to NYC
-initialRegion = {
-  latitude: 40.76727216,
-  longitude: -73.99392888,
-  latitudeDelta: 0.03,
-  longitudeDelta: 0.03,
-}
-
 class HomeScreen extends React.Component {
   constructor(props){
     super(props);
@@ -26,8 +18,8 @@ class HomeScreen extends React.Component {
       region:{
         latitude: 40.76727216,
         longitude: -73.99392888,
-        latitudeDelta: 0.03,
-        longitudeDelta: 0.03,
+        latitudeDelta: 1,
+        longitudeDelta: 1,
       },
       ready: true,
       location: null,
@@ -58,15 +50,14 @@ class HomeScreen extends React.Component {
   }
 
   //Check if the component successfully mounted on DOM
-  componentDidMount() {
-      //init.latitude = pos.coords.latitude;
-    
+  componentDidMount() {    
     //Make an error statement if the mounting has failed
     function errorAlert(err){
       alert(err);
     }
 
     navigator.geolocation.getCurrentPosition (
+      //Get the user position
       (position) => {
         let userState = {
           latitude: position.coords.latitude,
@@ -74,9 +65,8 @@ class HomeScreen extends React.Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
-        //Set the map to the actual user latitude and longitude
+        //Update the map to the actual user latitude and longitude
         this.setState({region:userState});
-        initialRegion = userState
         alert("latitude:" + this.state.region.latitude);
       },
       errorAlert,
@@ -108,7 +98,6 @@ class HomeScreen extends React.Component {
       text = JSON.stringify(this.state.location);
     }
     console.log(text);
-    console.log(this.state.region.latitude)
     return (
       <View style={{flex:1}}>
         <MapView
