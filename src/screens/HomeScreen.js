@@ -10,20 +10,18 @@ import {
 import { MapView } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
-//Set the initial region of the map to NYC
-const initialRegion = {
-  latitude: 40.76727216,
-  longitude: -73.99392888,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421
-}
-
 class HomeScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       //State of the initial region
-      region:{initialRegion},
+      region:{
+        latitude: 40.76727216,
+        longitude: -73.99392888,
+        latitudeDelta: 1,
+        longitudeDelta: 1,
+      },
+      ready: true,
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
@@ -51,29 +49,33 @@ class HomeScreen extends React.Component {
     }
   }
 
-  componentDidMount() {
-
-    function getLocation(){
-      if(navigator.geolocation){
-        return navigator.geolocation.getCurrentPosition(success);
-      }
-    }
-  
-    function success(position){
-      coordinate = position.coords;
-      console.log(coordinate)
-      return coordinate;
+  //Check if the component successfully mounted on DOM
+  componentDidMount() {    
+    //Make an error statement if the mounting has failed
+    function errorAlert(err){
+      alert(err);
     }
 
     navigator.geolocation.getCurrentPosition (
-      (position) => { alert("value:" + getLocation()) },
-      (error)    => { alert("Failed to mount") },
+      //Get the user position
+      (position) => {
+        let userState = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.015
+        };
+        //Update the map to the actual user latitude and longitude
+        this.setState({region:userState});
+        alert("latitude:" + this.state.region.latitude);
+      },
+      errorAlert,
       {
         enableHighAccuracy: true,
         timeout: 20000,
         maximumAge: 10000
       }
-    )
+    );
   }
 
   _getLocationAsync = async () => {
@@ -87,8 +89,8 @@ class HomeScreen extends React.Component {
     this.setState({ location });
   };
 
-  render() {
 
+  render() {
     let text = "Loading";
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
@@ -100,12 +102,18 @@ class HomeScreen extends React.Component {
       <View style={{flex:1}}>
         <MapView
           style={styles.map}
+          key={this.state.forceRefresh}
           provider="google"
           //This part shows the user location with a blue marker
-          region={this.props.coordinate}
+          region={this.state.region}
           showsUserLocation={true}
           //Initial region specified on the map
-          initialRegion={initialRegion}
+          initialRegion={{
+            latitude: this.state.region.latitude,
+            longitude: this.state.region.longitude,
+            latitudeDelta: this.state.region.latitudeDelta,
+            longitudeDelta: this.state.region.longitudeDelta,
+          }}
         >
         </MapView>
         <Button
