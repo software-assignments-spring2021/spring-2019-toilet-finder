@@ -5,7 +5,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
-    "test": "jest"
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo"
   },
   "dependencies": {
     "aws-sdk": "^2.418.0",
@@ -21,6 +24,7 @@
     "babel-register": "^6.26.0",
     "istanbul": "^0.4.5",
     "jest": "^24.1.0",
+    "jest-expo": "^32.0.0",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0"
   },
