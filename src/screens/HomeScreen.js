@@ -29,6 +29,7 @@ class HomeScreen extends React.Component {
     };
   }
 
+/*
 //Demo function for sorting by distance later
   sort(array){
     if (array.length === 0){
@@ -37,6 +38,7 @@ class HomeScreen extends React.Component {
     array.sort(function(a, b){return a - b});
     return array;
   }
+*/
 
   //Code being used for reac Native
   componentWillMount() {
