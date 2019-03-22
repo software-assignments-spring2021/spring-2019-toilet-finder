@@ -28,7 +28,7 @@ it('check if component mounts properly to mobile OS', () => {
 });
 
 it('check that _locationClick function produces an alert', () => {
-	let HomeScreen = renderer.create(<HomeScree />.getInstance());
+	let HomeScreen = renderer.create(<HomeScreen />.getInstance());
 	expect(App._locationClick().toEqual(Alert.alert("You are currently at ...")));
 });
 
