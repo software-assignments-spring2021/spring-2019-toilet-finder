@@ -64,6 +64,7 @@ class HomeScreen extends React.Component {
         let userState = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          //Harcoded zoom in for the map
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
