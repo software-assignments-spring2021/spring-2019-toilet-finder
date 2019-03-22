@@ -8,7 +8,4 @@ install:
   - npm install 
 script:
   - npm run test
-notifications:
-  slack:
-    rooms:
-      - nyu-agile-software:4Ll9V7RPK8fkqf2dGDvWiEGt#group_wcfind
+
