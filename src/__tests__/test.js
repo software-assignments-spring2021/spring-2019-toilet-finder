@@ -21,26 +21,26 @@ import renderer from 'react-test-renderer';
 
 //Nicholas's Tests
 // Screen rendering test
-it('HomeScreen renders correctly', () => {
-	const tree = renderer.create(<View />).toJSON();
-	expect(tree).toMatchSnapshot();
-});
+// it('HomeScreen renders correctly', () => {
+// 	const tree = renderer.create(<View />).toJSON();
+// 	expect(tree).toMatchSnapshot();
+// });
 
-it('AddLocationScreen renders correctly', () => {
-	const tree = renderer.create(<View />).toJSON();
-	expect(tree).toMatchSnapshot();
-});
+// it('AddLocationScreen renders correctly', () => {
+// 	const tree = renderer.create(<View />).toJSON();
+// 	expect(tree).toMatchSnapshot();
+// });
 
-it('check if component mounts properly to mobile OS', () => {
-	let App = renderer.create(<App />).getInstance();
-	expect(App.componentWillMount().toEqual(null));
+// it('check if component mounts properly to mobile OS', () => {
+// 	let App = renderer.create(<App />).getInstance();
+// 	expect(App.componentWillMount().toEqual(null));
 
-});
+// });
 
-it('check that _locationClick function produces an alert', () => {
-	let HomeScreen = renderer.create(<HomeScreen />.getInstance());
-	expect(App._locationClick().toEqual(Alert.alert("You are currently at ...")));
-});
+// it('check that _locationClick function produces an alert', () => {
+// 	let HomeScreen = renderer.create(<HomeScreen />.getInstance());
+// 	expect(App._locationClick().toEqual(Alert.alert("You are currently at ...")));
+// });
 
 //Justin's Tests
 test('Sort distance from closest to farthest', () => {
