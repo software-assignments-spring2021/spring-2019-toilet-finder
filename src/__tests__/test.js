@@ -1,14 +1,15 @@
 import React from 'react';
 import App from '../App.js';
 import HomeScreen from '../screens/HomeScreen.js';
-import AddLocationScreen from '../screens/AddLocationScreen.js';
+// import AddLocationScreen from '../screens/AddLocationScreen.js';
 import renderer from 'react-test-renderer';
 
 //Yuankai's Tests
-const AddLocation = require("../screens/AddLocationScreen.js");
+// const longLatToString = require("../screens/AddLocationScreen.js");
+var AddLocationScreen = require("../screens/AddLocationScreen.js");
 
 test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => {
-	expect(AddLocation(1.1, 2.2)).toBe("1.1+2.2");
+	expect(AddLocationScreen.longLatToString(1.1, 2.2)).toBe("1.1+2.2");
 })
 
 //Demo function for sorting by distance later
