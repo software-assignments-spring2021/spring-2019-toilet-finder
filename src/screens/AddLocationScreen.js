@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
 });
 
 // module.exports = longLatToString;
-// testing if pull requests is the problem
+// testing travis ci
 
 exports.longLatToString = longLatToString;
