@@ -3,8 +3,18 @@ import App from '../App.js';
 import HomeScreen from '../screens/HomeScreen.js';
 import AddLocationScreen from '../screens/AddLocationScreen.js';
 import renderer from 'react-test-renderer';
-//Yuankai's Tests
 
+//Demo function for sorting by distance later
+  function sort(array){
+    if (array.length === 0){
+      return "There are no bathrooms near you";
+    }
+    array.sort(function(a, b){return a - b});
+    return array;
+  }
+
+//Yuankai's Tests
+//Demo function for sorting by distance later
 
 //Esther's Tests
 
