@@ -27,14 +27,6 @@ function addToDynamo(state) {
 			"spec_type": state.text
 		}
 	}
-
-	// ddb.putItem(params, (err, data) => {
-	//   if (err) {
-	//     console.error("Unable to add item. ");
-	//   } else {
-	//     console.log("Adding item:");
-	//   }
-	// })
 	
 	ddb.put(params, function(err, data) {
 	  if (err) {
@@ -43,6 +35,13 @@ function addToDynamo(state) {
 	    console.log("Table names are ", data.TableNames);
 	  }
 	});
+}
+
+function longLatToString(long, lat) {
+	var longString = long.toString();
+	var latString = lat.toString();
+
+	return str = longString + "+" + latString;
 }
 
 class AddLocationScreen extends Component {
@@ -86,3 +85,5 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	}
 });
+
+module.exports = longLatToString;
