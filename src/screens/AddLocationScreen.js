@@ -86,4 +86,6 @@ const styles = StyleSheet.create({
 	}
 });
 
-module.exports = longLatToString;
+// module.exports = longLatToString;
+
+exports.longLatToString = longLatToString;
