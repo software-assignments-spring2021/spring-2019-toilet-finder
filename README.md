@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/nyu-software-engineering/toilet-finder.svg?branch=master)](https://travis-ci.com/nyu-software-engineering/toilet-finder)
 # Toilet Finder
 This app is built for those who must heed nature's calling. Using a map interface and user submitted data locations, the app 
 will help you find a location to suit your every biological need.
