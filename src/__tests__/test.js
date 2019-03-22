@@ -3,6 +3,7 @@ import App from '../App.js';
 import HomeScreen from '../screens/HomeScreen.js';
 import AddLocationScreen from '../screens/AddLocationScreen.js';
 import renderer from 'react-test-renderer';
+
 //Yuankai's Tests
 const AddLocation = require("../screens/AddLocationScreen.js");
 
@@ -10,6 +11,17 @@ test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => 
 	expect(AddLocation(1.1, 2.2)).toBe("1.1+2.2");
 })
 
+//Demo function for sorting by distance later
+//   function sort(array){
+//     if (array.length === 0){
+//       return "There are no bathrooms near you";
+//     }
+//     array.sort(function(a, b){return a - b});
+//     return array;
+//   }
+
+//Yuankai's Tests
+//Demo function for sorting by distance later
 
 //Esther's Tests
 
@@ -34,6 +46,7 @@ test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => 
 
 // it('check that _locationClick function produces an alert', () => {
 // 	let HomeScreen = renderer.create(<HomeScree />.getInstance());
+// 	let HomeScreen = renderer.create(<HomeScreen />.getInstance());
 // 	expect(App._locationClick().toEqual(Alert.alert("You are currently at ...")));
 // });
 
