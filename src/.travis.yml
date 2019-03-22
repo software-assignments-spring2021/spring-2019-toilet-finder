@@ -8,4 +8,4 @@ notifications:
 install:
   - npm install 
 script:
-  - node ./node_modules/jest/bin/jest.js --watchAll
+  - npm run test
