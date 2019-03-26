@@ -17,6 +17,7 @@ var creds = new AWS.CognitoIdentityCredentials({
 
 AWS.config.credentials = creds;
 
+// database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 function addToDynamo(state) {
@@ -27,7 +28,7 @@ function addToDynamo(state) {
 			"spec_type": state.text
 		}
 	}
-	
+
 	ddb.put(params, function(err, data) {
 	  if (err) {
 	    console.log("Error", err.code, err.message);
@@ -45,7 +46,7 @@ function longLatToString(long, lat) {
 }
 
 class AddLocationScreen extends Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {

@@ -10,6 +10,31 @@ import {
 import { MapView } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
+var AWS = require('aws-sdk')
+
+// Initialize the Amazon Cognito credentials provider
+AWS.config.region = 'us-east-1'; // Region
+var creds = new AWS.CognitoIdentityCredentials({
+	IdentityPoolId: 'us-east-1:e7994f82-231f-43db-9a9b-e1868280592f',
+});
+
+AWS.config.credentials = creds;
+
+// database connection
+var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+
+var params = {
+  TableName : 'toilets',
+  Key: {'long_lat': 'please'}
+};
+
+// database get function
+ddb.get(params, function(err, data) {
+  console.log("hello");
+  if (err) console.log("Error", err);
+  else console.log("Success", data);
+});
+
 class HomeScreen extends React.Component {
   constructor(props){
     super(props);
@@ -52,7 +77,7 @@ class HomeScreen extends React.Component {
   }
 
   //Check if the component successfully mounted on DOM
-  componentDidMount() {    
+  componentDidMount() {
     //Make an error statement if the mounting has failed
     function errorAlert(err){
       alert(err);
