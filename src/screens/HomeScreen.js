@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity } from 'react-native';
 import { MapView } from "expo";
+import { Marker } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
 var AWS = require('aws-sdk')
@@ -26,7 +27,7 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 // test parameters for querying the database
 var params = {
   ExpressionAttributeValues: {  // these are the expression used later
-    ":loc": "please"  
+    ":loc": "please"
   },
   KeyConditionExpression: "long_lat = :loc",  // expression used here for comparision with partition key
   TableName : 'toilets',  // name of the table to be queried
@@ -38,6 +39,7 @@ ddb.query(params, function(err, data) {
   if (err) console.log("Error", err);
   else console.log("Success", data);
 });
+
 
 class HomeScreen extends React.Component {
   constructor(props){
@@ -147,7 +149,14 @@ class HomeScreen extends React.Component {
             longitudeDelta: this.state.region.longitudeDelta,
           }}
         >
+        <MapView.Marker
+            coordinate={{latitude: 37.78825,
+            longitude: -122.4324}}
+            title={"title"}
+            description={"description"}
+         />
         </MapView>
+
         <Button
           onPress={() => {
             if (Location.hasServicesEnabledAsync())
