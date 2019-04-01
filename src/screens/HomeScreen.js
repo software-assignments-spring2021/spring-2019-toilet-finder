@@ -30,12 +30,12 @@ var params = {
     ":loc": "loc"
   },
   KeyConditionExpression: "spec_type = :loc",  // expression used here for comparision with partition key
-  TableName : 'toilets',  // name of the table to be queried
+  TableName: 'toilets',  // name of the table to be queried
+  IndexName: 'spec_type-index' // name of index for querying by datatype
 };
 
 // database query function passing in params to query by
 ddb.query(params, function(err, data) {
-  console.log("hello");
   if (err) console.log("Error", err);
   else console.log("Success", data);
 });
