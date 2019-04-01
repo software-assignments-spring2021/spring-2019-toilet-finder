@@ -27,9 +27,9 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 // test parameters for querying the database
 var params = {
   ExpressionAttributeValues: {  // these are the expression used later
-    ":loc": "please"
+    ":loc": "loc"
   },
-  KeyConditionExpression: "long_lat = :loc",  // expression used here for comparision with partition key
+  KeyConditionExpression: "spec_type = :loc",  // expression used here for comparision with partition key
   TableName : 'toilets',  // name of the table to be queried
 };
 
