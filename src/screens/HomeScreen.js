@@ -40,6 +40,15 @@ ddb.query(params, function(err, data) {
   else console.log("Success", data);
 });
 
+var markers = [
+  {
+    latitude: 40.76727216,
+    longitude: -73.99392888,
+    title: 'hello',
+    subtitle: '123123'
+  }
+];
+
 
 class HomeScreen extends React.Component {
   constructor(props){
@@ -56,7 +65,20 @@ class HomeScreen extends React.Component {
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
-      markers:[]
+      markers: [{
+        title: 'bathroom1',
+        coordinates: {
+          latitude: 40.76727216,
+          longitude: -73.99392888,
+        },
+      },
+      {
+        title: 'bathroom2',
+        coordinates: {
+          latitude: 40.77,
+          longitude: -73.99392888,
+        },
+      }]
     };
   }
 
@@ -149,14 +171,13 @@ class HomeScreen extends React.Component {
             longitudeDelta: this.state.region.longitudeDelta,
           }}
         >
-        <MapView.Marker
-            coordinate={{latitude: 37.78825,
-            longitude: -122.4324}}
-            title={"title"}
-            description={"description"}
-         />
+          {this.state.markers.map(marker => (
+            <MapView.Marker
+              coordinate={marker.coordinates}
+              title={marker.title}
+            />
+          ))}
         </MapView>
-
         <Button
           onPress={() => {
             if (Location.hasServicesEnabledAsync())
