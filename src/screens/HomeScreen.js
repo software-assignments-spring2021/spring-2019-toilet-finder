@@ -23,13 +23,17 @@ AWS.config.credentials = creds;
 // database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
+// test parameters for querying the database
 var params = {
-  TableName : 'toilets',
-  Key: {'long_lat': 'please'}
+  ExpressionAttributeValues: {  // these are the expression used later
+    ":loc": "please"  
+  },
+  KeyConditionExpression: "long_lat = :loc",  // expression used here for comparision with partition key
+  TableName : 'toilets',  // name of the table to be queried
 };
 
-// database get function
-ddb.get(params, function(err, data) {
+// database query function passing in params to query by
+ddb.query(params, function(err, data) {
   console.log("hello");
   if (err) console.log("Error", err);
   else console.log("Success", data);
