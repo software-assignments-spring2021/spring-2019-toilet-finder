@@ -36,8 +36,6 @@ var params = {
 };
 
 class HomeScreen extends React.Component {
-
-class HomeScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -156,7 +154,6 @@ class HomeScreen extends React.Component {
     }
 
     console.log(this.state.markers)
-    // console.log(text);
 
     return (
       <View style={{flex:1}}>
@@ -212,19 +209,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-// const ToiletImage = () => (
-//    <Image source = {require('./toilet.jpg')} />
-// )
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   buttonContainer: {
-//     margin: 20
-//   },
-// });
