@@ -35,19 +35,7 @@ var params = {
   IndexName: 'spec_type-index' // name of index for querying by datatype
 };
 
-// database query function passing in params to query by
-// async function queryLocations() {
-//   await ddb.query(params, function(err, data) {
-//     if (err) {
-//       console.log("Error", err);
-//     } else {
-//       console.log("Success", data);
-//       return data
-//     }
-//   });
-// }
-
-
+class HomeScreen extends React.Component {
 
 class HomeScreen extends React.Component {
   constructor(props){
@@ -222,48 +210,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
 });
-
-// import React, { Component } from 'react';
-// import {
-// 	View,
-// 	StyleSheet,
-// 	Button,
-// 	Alert,
-//   Text,
-//   Image,
-//   AppRegistry
-// } from 'react-native';
-
-// class HomeScreen extends Component {
-// 	//A function that simply pops up an alert upon clicking a button
-//   _locationClick() {
-//     Alert.alert('You are currently at ...')
-//   }
-//   _rankingClick() {
-//     Alert.alert('Rank toilets by distance')
-//   }
-
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//         <ToiletImage />
-//         <Text>Toilet Finder</Text>
-//       	<View style={styles.buttonContainer}>
-//           <Button
-//             onPress={this._locationClick}
-//             title="Current location"
-//           />
-//         </View>
-//         <View style={styles.buttonContainer}>
-//           <Button
-//             onPress={this._rankingClick}
-//             title="Toilets by distance"
-//           />
-//         </View>
-//       </View>
-//     );
-//   }
-// }
 
 export default HomeScreen;
 
