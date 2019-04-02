@@ -26,7 +26,7 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 // test parameters for querying the database
 var params = {
   ExpressionAttributeValues: {  // these are the expression used later
-    ":loc": "loc"  
+    ":loc": "loc"
   },
   KeyConditionExpression: "spec_type = :loc",  // expression used here for comparision with partition key
   TableName: 'toilets',  // name of the table to be queried
@@ -42,8 +42,23 @@ var params = {
 //       console.log("Success", data);
 //       return data
 //     }
-//   }); 
+//   });
 // }
+
+markers = [{
+  title: 'bathroom1',
+  coordinates: {
+    latitude: 40.76727216,
+    longitude: -73.99392888,
+  },
+},
+{
+  title: 'bathroom2',
+  coordinates: {
+    latitude: 40.77,
+    longitude: -73.99392888,
+  },
+}];
 
 class HomeScreen extends React.Component {
 
@@ -61,7 +76,7 @@ class HomeScreen extends React.Component {
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
-      markers: null
+      markers: markers
     };
   }
 
@@ -102,7 +117,7 @@ class HomeScreen extends React.Component {
         // set the list of markers in the state
         this.setState({markers: data.Items});
       }
-    }); 
+    });
 
     navigator.geolocation.getCurrentPosition (
       //Get the user position
@@ -167,6 +182,12 @@ class HomeScreen extends React.Component {
             longitudeDelta: this.state.region.longitudeDelta,
           }}
         >
+        {this.state.markers.map(marker => (
+          <MapView.Marker
+            coordinate={marker.coordinates}
+            title={marker.title}
+          />
+        ))}
         </MapView>
         <Button
           onPress={() => {
