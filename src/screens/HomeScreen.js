@@ -50,24 +50,7 @@ class HomeScreen extends React.Component {
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
-      markers: [
-        {
-          coordinates: {
-            latitude: 40.73,
-            longitude: -73.99392888,
-          },
-          title: 'bathroom1',
-          description: 'first bathroom',
-        },
-        {
-          coordinates: {
-            latitude: 40.72,
-            longitude: -73.99392888,
-          },
-          title: 'bathroom2',
-          description: 'second bathroom'
-        }
-      ],
+      markers: [],
     };
   }
 
@@ -81,6 +64,10 @@ class HomeScreen extends React.Component {
     return array;
   }
 */
+  handleMarkerPress(event) {
+    const markerID = event.nativeEvent.id;
+    console.log(markerID);
+  }
 
   //Code being used for reac Native
   componentWillMount() {
@@ -174,10 +161,9 @@ class HomeScreen extends React.Component {
         >
         {this.state.markers.map((marker, index) => (
           <MapView.Marker
-            key={index}
-            coordinate={marker.coordinates}
+            key={marker.long_lat}
+            coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
             title={marker.name}
-            description={marker.description}
           >
 
           </MapView.Marker>
