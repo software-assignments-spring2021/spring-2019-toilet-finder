@@ -1,7 +1,7 @@
 {
-  "expoServerNgrokUrl": "https://ax-iht.nicholasruan.src.exp.direct",
-  "packagerNgrokUrl": "https://packager.ax-iht.nicholasruan.src.exp.direct",
-  "ngrokPid": 18366,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
   "expoServerPort": null,
   "packagerPort": null,

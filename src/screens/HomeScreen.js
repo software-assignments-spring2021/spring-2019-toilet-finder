@@ -6,7 +6,9 @@ import {
   Button,
   Alert,
   Platform,
-  TouchableOpacity } from 'react-native';
+  TouchableOpacity,
+  TouchableHighlight,
+} from 'react-native';
 import { MapView, Marker } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
@@ -45,23 +47,9 @@ var params = {
 //   });
 // }
 
-markers = [{
-  title: 'bathroom1',
-  coordinates: {
-    latitude: 40.76727216,
-    longitude: -73.99392888,
-  },
-},
-{
-  title: 'bathroom2',
-  coordinates: {
-    latitude: 40.77,
-    longitude: -73.99392888,
-  },
-}];
+
 
 class HomeScreen extends React.Component {
-
   constructor(props){
     super(props);
     this.state = {
@@ -76,7 +64,24 @@ class HomeScreen extends React.Component {
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
-      markers: markers
+      markers: [
+        {
+          coordinates: {
+            latitude: 40.73,
+            longitude: -73.99392888,
+          },
+          title: 'bathroom1',
+          description: 'first bathroom',
+        },
+        {
+          coordinates: {
+            latitude: 40.72,
+            longitude: -73.99392888,
+          },
+          title: 'bathroom2',
+          description: 'second bathroom'
+        }
+      ],
     };
   }
 
@@ -182,11 +187,15 @@ class HomeScreen extends React.Component {
             longitudeDelta: this.state.region.longitudeDelta,
           }}
         >
-        {this.state.markers.map(marker => (
+        {this.state.markers.map((marker, index) => (
           <MapView.Marker
+            key={index}
             coordinate={marker.coordinates}
-            title={marker.title}
-          />
+            title={marker.name}
+            description={marker.description}
+          >
+
+          </MapView.Marker>
         ))}
         </MapView>
         <Button
