@@ -7,7 +7,7 @@ import {
   Alert,
   Platform,
   TouchableOpacity } from 'react-native';
-import { MapView } from "expo";
+import { MapView, Marker } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
 var AWS = require('aws-sdk')
@@ -34,12 +34,19 @@ var params = {
 };
 
 // database query function passing in params to query by
-ddb.query(params, function(err, data) {
-  if (err) console.log("Error", err);
-  else console.log("Success", data);
-});
+// async function queryLocations() {
+//   await ddb.query(params, function(err, data) {
+//     if (err) {
+//       console.log("Error", err);
+//     } else {
+//       console.log("Success", data);
+//       return data
+//     }
+//   }); 
+// }
 
 class HomeScreen extends React.Component {
+
   constructor(props){
     super(props);
     this.state = {
@@ -54,7 +61,7 @@ class HomeScreen extends React.Component {
       location: null,
       errorMessage: null,
       //Locations of bathrooms to be stored
-      markers:[]
+      markers: null
     };
   }
 
@@ -81,11 +88,21 @@ class HomeScreen extends React.Component {
   }
 
   //Check if the component successfully mounted on DOM
-  componentDidMount() {
+  async componentDidMount() {
     //Make an error statement if the mounting has failed
     function errorAlert(err){
       alert(err);
     }
+
+    // query the database for toilet locations
+    await ddb.query(params, (err, data) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        // set the list of markers in the state
+        this.setState({markers: data.Items});
+      }
+    }); 
 
     navigator.geolocation.getCurrentPosition (
       //Get the user position
@@ -121,15 +138,18 @@ class HomeScreen extends React.Component {
     this.setState({ location });
   };
 
-
   render() {
     let text = "Loading";
+
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    console.log(text);
+
+    console.log(this.state.markers)
+    // console.log(text);
+
     return (
       <View style={{flex:1}}>
         <MapView
@@ -151,6 +171,7 @@ class HomeScreen extends React.Component {
         <Button
           onPress={() => {
             if (Location.hasServicesEnabledAsync())
+              console.log(this.state.markers)
               Alert.alert(text);
           }}
           style={styles.findButton}
