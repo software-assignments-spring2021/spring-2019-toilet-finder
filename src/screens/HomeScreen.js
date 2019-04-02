@@ -6,7 +6,9 @@ import {
   Button,
   Alert,
   Platform,
-  TouchableOpacity } from 'react-native';
+  TouchableOpacity,
+  TouchableHighlight,
+} from 'react-native';
 import { MapView, Marker } from "expo";
 import { Constants, Location, Permissions } from 'expo';
 
@@ -34,7 +36,6 @@ var params = {
 };
 
 class HomeScreen extends React.Component {
-
   constructor(props){
     super(props);
     this.state = {
@@ -48,8 +49,25 @@ class HomeScreen extends React.Component {
       ready: true,
       location: null,
       errorMessage: null,
-      // bathroom markers to be displayed on the homescreen
-      markers: []
+      //Locations of bathrooms to be stored
+      markers: [
+        {
+          coordinates: {
+            latitude: 40.73,
+            longitude: -73.99392888,
+          },
+          title: 'bathroom1',
+          description: 'first bathroom',
+        },
+        {
+          coordinates: {
+            latitude: 40.72,
+            longitude: -73.99392888,
+          },
+          title: 'bathroom2',
+          description: 'second bathroom'
+        }
+      ],
     };
   }
 
@@ -136,7 +154,6 @@ class HomeScreen extends React.Component {
     }
 
     console.log(this.state.markers)
-    // console.log(text);
 
     return (
       <View style={{flex:1}}>
@@ -155,14 +172,15 @@ class HomeScreen extends React.Component {
             longitudeDelta: this.state.region.longitudeDelta,
           }}
         >
-        {this.state.markers.map(marker => (
+        {this.state.markers.map((marker, index) => (
           <MapView.Marker
-            coordinate = {{
-              latitude: marker.latitude,
-              longitude: marker.longitude
-            }}
-            title = {marker.name}
-          />
+            key={index}
+            coordinate={marker.coordinates}
+            title={marker.name}
+            description={marker.description}
+          >
+
+          </MapView.Marker>
         ))}
         </MapView>
         <Button
@@ -191,19 +209,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-// const ToiletImage = () => (
-//    <Image source = {require('./toilet.jpg')} />
-// )
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   buttonContainer: {
-//     margin: 20
-//   },
-// });
