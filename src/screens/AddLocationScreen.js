@@ -56,11 +56,29 @@ function addLocationToDynamo(state) {
 	});
 }
 
+//Randomizer function to call when generating primary key
+function randomizer(){
+	let val = Math.floor(Math.random() * Math.floor(10));
+	val = val.toString();
+	return val;
+}
+
+function addKey(str){
+	//Should randomize more after discussing with the team
+	let add = "-";
+	add = add.concat(randomizer());
+	let key = str.concat(add);
+	return key;
+}
+
 function longLatToString(long, lat) {
 	var longString = long.toString();
 	var latString = lat.toString();
-
-	return str = longString + "+" + latString;
+	let str = longString + "+" + latString;
+	str = addKey(str);
+	//Print out key to see if it is working correctly
+	console.log(str);
+	return str;
 }
 
 class AddLocationScreen extends Component {

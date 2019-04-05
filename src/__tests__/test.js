@@ -9,7 +9,25 @@ import renderer from 'react-test-renderer';
 var AddLocationScreen = require("../screens/AddLocationScreen.js");
 
 test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => {
-	expect(AddLocationScreen.longLatToString(1.1, 2.2)).toBe("1.1+2.2");
+	//Mock object to be made
+	let str = "1.1+2.2-";
+	let compare = AddLocationScreen.longLatToString(1.1, 2.2);
+	let i = compare.length;
+	str = str.concat(compare[i-1]);
+	expect(compare).toBe(str);
+})
+
+test('False if 1.1 and 2.2 comes out without -int at the end', () => {
+	//Mock object to be made
+	let str = "1.1+2.2";
+	let compare = AddLocationScreen.longLatToString(1.1, 2.2);
+	expect(compare).not.toBe(str);
+})
+
+test('Check if the dash primary key got created properly with a dash', () => {
+	let dash = RegExp('-');
+	let answer = AddLocationScreen.longLatToString(1.1, 2.2);
+	expect(dash.test(answer)).toBe(true);
 })
 
 //Demo function for sorting by distance later
