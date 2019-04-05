@@ -56,11 +56,17 @@ function addLocationToDynamo(state) {
 	});
 }
 
+//Randomizer function to call when generating primary key
+function randomizer(){
+	let val = Math.floor(Math.random() * Math.floor(10));
+	val = val.toString();
+	return val;
+}
+
 function addKey(str){
 	//Should randomize more after discussing with the team
 	let add = "-";
-	let num = Math.floor(Math.random() * Math.floor(10));
-	add = add.concat(num.toString());
+	add = add.concat(randomizer());
 	let key = str.concat(add);
 	return key;
 }
@@ -70,6 +76,7 @@ function longLatToString(long, lat) {
 	var latString = lat.toString();
 	let str = longString + "+" + latString;
 	str = addKey(str);
+	//Print out key to see if it is working correctly
 	console.log(str);
 	return str;
 }

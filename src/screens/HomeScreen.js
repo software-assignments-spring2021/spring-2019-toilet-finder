@@ -141,7 +141,6 @@ class HomeScreen extends React.Component {
     }
 
     console.log(this.state.markers)
-
     return (
       <View style={{flex:1}}>
         <MapView
