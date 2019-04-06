@@ -17,7 +17,7 @@ var AWS = require('aws-sdk')
 // Initialize the Amazon Cognito credentials provider
 AWS.config.region = 'us-east-1'; // Region
 var creds = new AWS.CognitoIdentityCredentials({
-	IdentityPoolId: 'us-east-1:e7994f82-231f-43db-9a9b-e1868280592f',
+  IdentityPoolId: 'us-east-1:e7994f82-231f-43db-9a9b-e1868280592f',
 });
 
 AWS.config.credentials = creds;
@@ -35,7 +35,7 @@ var params = {
   IndexName: 'spec_type-index' // name of index for querying by datatype
 };
 
-class HomeScreen extends React.Component {
+class HomeScreen extends React.PureComponent {
   constructor(props){
     super(props);
     this.state = {
@@ -49,6 +49,8 @@ class HomeScreen extends React.Component {
       ready: true,
       location: null,
       errorMessage: null,
+      //parameter to prevent multiple renders
+      isLoading: true,
       //Locations of bathrooms to be stored
       markers: [],
     };
@@ -72,9 +74,7 @@ class HomeScreen extends React.Component {
   //Code being used for reac Native
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Error with Android Emulator, try on your device',
-      });
+      this.state.errorMessage = 'Error with Android Emulator, try on your device';
     } else {
       this._getLocationAsync();
     }
@@ -87,16 +87,6 @@ class HomeScreen extends React.Component {
       alert(err);
     }
 
-    // query the database for toilet locations
-    await ddb.query(params, (err, data) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        // set the list of markers in the state
-        this.setState({markers: data.Items});
-      }
-    });
-
     navigator.geolocation.getCurrentPosition (
       //Get the user position
       (position) => {
@@ -107,8 +97,21 @@ class HomeScreen extends React.Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
-        //Update the map to the actual user latitude and longitude
-        this.setState({region:userState});
+        // query the database for toilet locations
+        ddb.query(params, (err, data) => {
+          if (err) {
+            console.log("Error", err);
+          } else {
+            // set the list of markers in the state and update map to user lat and long
+            //this.state.markers = data.Items;
+            //this.state.region = userState;
+            this.setState({
+              markers: data.Items,
+              region:userState,
+              isLoading:false
+            });
+          }
+        });
         alert("latitude:" + this.state.region.latitude);
       },
       errorAlert,
@@ -123,13 +126,12 @@ class HomeScreen extends React.Component {
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
+      this.state.errorMessage = 'Permission to access location was denied';
     }
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    this.state.location = location;
   };
+
 
   render() {
     let text = "Loading";
@@ -139,48 +141,51 @@ class HomeScreen extends React.Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-
     console.log(this.state.markers)
-    return (
-      <View style={{flex:1}}>
-        <MapView
-          style={styles.map}
-          key={this.state.forceRefresh}
-          provider="google"
-          //This part shows the user location with a blue marker
-          region={this.state.region}
-          showsUserLocation={true}
-          //Initial region specified on the map
-          initialRegion={{
-            latitude: this.state.region.latitude,
-            longitude: this.state.region.longitude,
-            latitudeDelta: this.state.region.latitudeDelta,
-            longitudeDelta: this.state.region.longitudeDelta,
-          }}
-        >
-        {this.state.markers.map((marker, index) => (
-          <MapView.Marker
-            key={marker.long_lat}
-            coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
-            title={marker.name}
+    //Only render if isLoading is false, which occurrs inside componentDidMount
+    if (this.state.isLoading == false){
+      return (
+        <View style={{flex:1}}>
+          <MapView
+            style={styles.map}
+            key={this.state.forceRefresh}
+            provider="google"
+            //This part shows the user location with a blue marker
+            region={this.state.region}
+            showsUserLocation={true}
+            //Initial region specified on the map
+            initialRegion={{
+              latitude: this.state.region.latitude,
+              longitude: this.state.region.longitude,
+              latitudeDelta: this.state.region.latitudeDelta,
+              longitudeDelta: this.state.region.longitudeDelta,
+            }}
           >
+          {this.state.markers.map((marker, index) => (
+            <MapView.Marker
+              key={marker.long_lat}
+              coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
+              title={marker.name}
+            >
 
-          </MapView.Marker>
-        ))}
-        </MapView>
-        <Button
-          onPress={() => {
-            if (Location.hasServicesEnabledAsync())
-              console.log(this.state.markers)
-              Alert.alert(text);
-          }}
-          style={styles.findButton}
-          title="Find The Nearest Bathroom"
-          color="red"
-        />
-      </View>
-    );
-      }
+            </MapView.Marker>
+          ))}
+          </MapView>
+          <Button
+            onPress={() => {
+              if (Location.hasServicesEnabledAsync())
+                console.log(this.state.markers)
+                Alert.alert(text);
+            }}
+            style={styles.findButton}
+            title="Find The Nearest Bathroom"
+            color="red"
+          />
+        </View>
+      );
+    }
+    return <View/>;
+  }
 }
 
 const styles = StyleSheet.create({
