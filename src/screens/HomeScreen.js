@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   Button,
   Alert,
   Platform,
@@ -112,7 +113,6 @@ class HomeScreen extends React.PureComponent {
             });
           }
         });
-        alert("latitude:" + this.state.region.latitude);
       },
       errorAlert,
       {
@@ -161,15 +161,14 @@ class HomeScreen extends React.PureComponent {
               longitudeDelta: this.state.region.longitudeDelta,
             }}
           >
-          {this.state.markers.map((marker, index) => (
-            <MapView.Marker
-              key={marker.long_lat}
-              coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
-              title={marker.name}
-            >
-
-            </MapView.Marker>
-          ))}
+            {this.state.markers.map((marker, index) => (
+              <MapView.Marker
+                key={marker.long_lat}
+                coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
+                title={marker.name}
+              >
+              </MapView.Marker>
+            ))}
           </MapView>
           <Button
             onPress={() => {
@@ -184,7 +183,16 @@ class HomeScreen extends React.PureComponent {
         </View>
       );
     }
-    return <View/>;
+    else{
+      return(
+        <View style = {{justifyContent: 'center', alignItems: 'center', height:'100%', width:'100%'}}>
+          <Image
+            style = {styles.load}
+            source={{uri: 'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}}
+          />
+        </View>
+      )
+    }
   }
 }
 
@@ -196,6 +204,10 @@ const styles = StyleSheet.create({
     zIndex: -1,
     flex: 1
   },
+  load: {
+    height: 200, 
+    width: 200, 
+  }
 });
 
 export default HomeScreen;
