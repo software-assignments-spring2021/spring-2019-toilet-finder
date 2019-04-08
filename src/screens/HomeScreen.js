@@ -1,16 +1,25 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
-  Button,
   Alert,
   Platform,
   TouchableOpacity,
   TouchableHighlight
 } from 'react-native';
-import { Container, Header, Left, Body, Right, Icon, Title } from 'native-base';
+import {
+  Container,
+  Header,
+  Left,
+  Button,
+  Body,
+  Text,
+  Right,
+  Icon,
+  Title,
+  Drawer
+} from 'native-base';
 import {
   MapView,
   Marker,
@@ -19,6 +28,7 @@ import {
   Permissions
 } from "expo";
 import { SearchBar } from "react-native-elements";
+import SideBar from './SideBar';
 
 var AWS = require('aws-sdk')
 
@@ -44,6 +54,7 @@ var params = {
 };
 
 class HomeScreen extends React.PureComponent {
+
   constructor(props){
     super(props);
     this.state = {
@@ -139,7 +150,15 @@ class HomeScreen extends React.PureComponent {
     this.state.location = location;
   };
 
+  closeDrawer(){
+    this._drawer._root.close()
+  };
 
+  openDrawer(){
+    this._drawer._root.open()
+  };
+
+  static navigationOptions = {title: 'welcome', header: null};
   render() {
     let text = "Loading";
 
@@ -152,14 +171,22 @@ class HomeScreen extends React.PureComponent {
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
       return (
-        <View style={{flex:1}}>
-
-          <Header style={{height: 70, paddingTop: 20}}>
+        <Drawer
+          ref={(ref) => {this._drawer = ref}}
+          content={<SideBar navigator={this._navigator} />}
+          onClose={() => this.closeDrawer()} >
+        <Container style={{flex:1}}>
+          <Header style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
             <Left>
-              <Icon name="md-menu" style={{color:'white'}}/>
+              <Button transparent onPress={()=> this.openDrawer()}>
+              <Icon name="md-menu"  style={{color:'black'}} />
+              </Button>
             </Left>
+            <Body style={{paddingLeft:70}}>
+              <Title style={{color:'black'}}>Toilet Finder</Title>
+            </Body>
             <Right>
-              <Icon name='search' style={{color:'white'}}/>
+              <Icon name='search' style={{color:'black'}}/>
             </Right>
           </Header>
           <MapView
@@ -186,17 +213,11 @@ class HomeScreen extends React.PureComponent {
               </MapView.Marker>
             ))}
           </MapView>
-          <Button
-            onPress={() => {
-              if (Location.hasServicesEnabledAsync())
-                console.log(this.state.markers)
-                Alert.alert(text);
-            }}
-            style={styles.findButton}
-            title="Find The Nearest Bathroom"
-            color="red"
-          />
-        </View>
+          <Button block onPress={()=> Alert.alert("Finding Bathrooms...")} style={{backgroundColor: '#EFE1B0'}}>
+            <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
+          </Button>
+        </Container>
+        </Drawer>
       );
     }
     else{
