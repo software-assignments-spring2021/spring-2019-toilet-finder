@@ -8,9 +8,16 @@ import {
   Platform,
   TouchableOpacity,
   TouchableHighlight,
+  Header
 } from 'react-native';
-import { MapView, Marker } from "expo";
-import { Constants, Location, Permissions } from 'expo';
+import {
+  MapView,
+  Marker,
+  Constants,
+  Location,
+  Permissions
+} from "expo";
+import { SearchBar } from "react-native-elements";
 
 var AWS = require('aws-sdk')
 
@@ -131,7 +138,9 @@ class HomeScreen extends React.Component {
     this.setState({ location });
   };
 
+
   render() {
+    // <SearchBar placeholder="Type Here..."/>
     let text = "Loading";
 
     if (this.state.errorMessage) {

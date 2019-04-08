@@ -1,25 +1,30 @@
-import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {
+  createBottomTabNavigator,
+  createAppContainer,
+  createMaterialTopTabNavigator
+} from 'react-navigation';
 
 import HomeScreen from './screens/HomeScreen';
 import AddLocationScreen from './screens/AddLocationScreen';
 
-const BottomTabNavigator = createBottomTabNavigator({
+const AppNavigator = createMaterialTopTabNavigator(
+  {
   Home: { screen: HomeScreen },
   Add: { screen: AddLocationScreen },
-});
+},
+{
+  tabBarOptions: {
 
-const App = createAppContainer(BottomTabNavigator);
+    style: {
+      color: 'red',
+    }
+  }
+}
 
-export default App;
-
-// var params = {
-//   TableName: "test",
-//   Item: {
-//     "item": "connection established"
-//   }
-// }
-
+);
 
 
 
+const AppContainer = createAppContainer(AppNavigator);
 
+export default AppContainer;
