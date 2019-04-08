@@ -8,9 +8,9 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
-  TouchableHighlight,
-  Header
+  TouchableHighlight
 } from 'react-native';
+import { Container, Header, Left, Body, Right, Icon, Title } from 'native-base';
 import {
   MapView,
   Marker,
@@ -141,7 +141,6 @@ class HomeScreen extends React.PureComponent {
 
 
   render() {
-    // <SearchBar placeholder="Type Here..."/>
     let text = "Loading";
 
     if (this.state.errorMessage) {
@@ -154,6 +153,15 @@ class HomeScreen extends React.PureComponent {
     if (this.state.isLoading == false){
       return (
         <View style={{flex:1}}>
+
+          <Header style={{height: 70, paddingTop: 20}}>
+            <Left>
+              <Icon name="md-menu" style={{color:'white'}}/>
+            </Left>
+            <Right>
+              <Icon name='search' style={{color:'white'}}/>
+            </Right>
+          </Header>
           <MapView
             style={styles.map}
             key={this.state.forceRefresh}
@@ -213,8 +221,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   load: {
-    height: 200, 
-    width: 200, 
+    height: 200,
+    width: 200,
   }
 });
 
