@@ -1,69 +1,34 @@
-<<<<<<< Updated upstream
-import React, { Component } from 'react';
-import {
-	View,
-	StyleSheet,
-	Button,
-	Alert
-} from 'react-native';
-
-class HomeScreen extends Component {
-	//A function that simply pops up an alert upon clicking a button
-  _locationClick() {
-    Alert.alert('You are currently at ...')
-  }
-  _rankingClick() {
-    Alert.alert('Rank toilets by distance')
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-      	<View style={styles.buttonContainer}>
-          <Button
-            onPress={this._locationClick}
-            title="Current location"
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={this._rankingClick}
-            title="Toilets by distance"
-          />
-        </View>
-      </View>
-    );
-  }
-}
-
-export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    margin: 20
-  },
-});
-=======
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
-  Button,
   Alert,
   Platform,
   TouchableOpacity,
-  TouchableHighlight,
+  TouchableHighlight
 } from 'react-native';
-import { MapView, Marker } from "expo";
-import { Constants, Location, Permissions } from 'expo';
+import {
+  Container,
+  Header,
+  Left,
+  Button,
+  Body,
+  Text,
+  Right,
+  Icon,
+  Title,
+  Drawer
+} from 'native-base';
+import {
+  MapView,
+  Marker,
+  Constants,
+  Location,
+  Permissions
+} from "expo";
+import { SearchBar } from "react-native-elements";
+import SideBar from './SideBar';
 
 var AWS = require('aws-sdk')
 
@@ -89,6 +54,7 @@ var params = {
 };
 
 class HomeScreen extends React.PureComponent {
+
   constructor(props){
     super(props);
     this.state = {
@@ -184,7 +150,15 @@ class HomeScreen extends React.PureComponent {
     this.state.location = location;
   };
 
+  closeDrawer(){
+    this._drawer._root.close()
+  };
 
+  openDrawer(){
+    this._drawer._root.open()
+  };
+
+  static navigationOptions = {title: 'welcome', header: null};
   render() {
     let text = "Loading";
 
@@ -197,7 +171,24 @@ class HomeScreen extends React.PureComponent {
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
       return (
-        <View style={{flex:1}}>
+        <Drawer
+          ref={(ref) => {this._drawer = ref}}
+          content={<SideBar navigator={this._navigator} />}
+          onClose={() => this.closeDrawer()} >
+        <Container style={{flex:1}}>
+          <Header style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
+            <Left>
+              <Button transparent onPress={()=> this.openDrawer()}>
+              <Icon name="md-menu"  style={{color:'black'}} />
+              </Button>
+            </Left>
+            <Body style={{paddingLeft:70}}>
+              <Title style={{color:'black'}}>Toilet Finder</Title>
+            </Body>
+            <Right>
+              <Icon name='search' style={{color:'black'}}/>
+            </Right>
+          </Header>
           <MapView
             style={styles.map}
             key={this.state.forceRefresh}
@@ -222,17 +213,11 @@ class HomeScreen extends React.PureComponent {
               </MapView.Marker>
             ))}
           </MapView>
-          <Button
-            onPress={() => {
-              if (Location.hasServicesEnabledAsync())
-                console.log(this.state.markers)
-                Alert.alert(text);
-            }}
-            style={styles.findButton}
-            title="Find The Nearest Bathroom"
-            color="red"
-          />
-        </View>
+          <Button block onPress={()=> Alert.alert("Finding Bathrooms...")} style={{backgroundColor: '#EFE1B0'}}>
+            <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
+          </Button>
+        </Container>
+        </Drawer>
       );
     }
     else{
@@ -257,10 +242,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   load: {
-    height: 200, 
-    width: 200, 
+    height: 200,
+    width: 200,
   }
 });
 
 export default HomeScreen;
->>>>>>> Stashed changes
