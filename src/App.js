@@ -4,6 +4,8 @@ import {
   createAppContainer,
   createStackNavigator
 } from 'react-navigation';
+
+import "./global.js"
 import HomeScreen from './screens/HomeScreen';
 import AddLocationScreen from './screens/AddLocationScreen';
 
