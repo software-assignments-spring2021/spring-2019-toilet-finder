@@ -1,16 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import {
+  createAppContainer,
+  createStackNavigator
+} from 'react-navigation';
 
+import "./global.js"
 import HomeScreen from './screens/HomeScreen';
 import AddLocationScreen from './screens/AddLocationScreen';
 
-const BottomTabNavigator = createBottomTabNavigator({
-  Home: { screen: HomeScreen },
-  Add: { screen: AddLocationScreen },
+const AppNavigator = createStackNavigator({
+    Home: { screen: HomeScreen },
+    Add: { screen: AddLocationScreen },
 });
 
-const App = createAppContainer(BottomTabNavigator);
+const App = createAppContainer(AppNavigator);
 
 export default App;
-

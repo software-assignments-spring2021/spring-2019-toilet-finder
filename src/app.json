@@ -14,7 +14,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#EFE1B0"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +23,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.toiletfinder"
+
+    },
+    "android": {
+      "package": "com.toiletfinder",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyClf3uBNve3WhiBo3OoEzgVzu6PPmf6_7I" }
+      }
     }
   }
 }
