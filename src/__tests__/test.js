@@ -5,7 +5,7 @@ import HomeScreen from '../screens/HomeScreen.js';
 import renderer from 'react-test-renderer';
 
 //Yuankai's Tests
-const longLatToString = require("../screens/AddLocationScreen.js");
+// const longLatToString = require("../screens/AddLocationScreen.js");
 var AddLocationScreen = require("../screens/AddLocationScreen.js");
 
 test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => {
