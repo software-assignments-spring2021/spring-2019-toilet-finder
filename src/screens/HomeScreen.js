@@ -194,7 +194,7 @@ class HomeScreen extends React.Component {
 	  		destination: {
 	  			latitude: 41.86727216,
 	        	longitude: -72.89392888
-	  		}
+	  		},
 	  		params: [
 		        {
 		          //Always guide user for walking there, not driving etc.
@@ -207,9 +207,8 @@ class HomeScreen extends React.Component {
 		        }
 	      	]
       	}
+    getDirections(data);
   	}
-  	getDirections(data);
-  }
 
   static navigationOptions = {title: 'welcome', header: null};
   render() {
