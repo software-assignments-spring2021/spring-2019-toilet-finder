@@ -1,7 +1,7 @@
 import React from 'react';
 import App from '../App.js';
 import HomeScreen from '../screens/HomeScreen.js';
-import AddLocationScreen from '../screens/AddLocationScreen.js';
+import AddLocationScreen from '../screens/AddLocationScreen';
 import renderer from 'react-test-renderer';
 
 //Yuankai's Tests
