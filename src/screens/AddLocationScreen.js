@@ -73,7 +73,7 @@ function addKey(str){
 	return key;
 }
 
-function longLatToString(long, lat) {
+export function longLatToString(long, lat) {
 	var longString = long.toString();
 	var latString = lat.toString();
 	let str = longString + "+" + latString;
