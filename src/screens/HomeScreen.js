@@ -74,8 +74,6 @@ class HomeScreen extends React.Component {
       //Locations of bathrooms to be stored
       markers: [],
     };
-    this.getDirections = this.getDirections.bind(this);
-    this.handleGetDirections = this.handleGetDirections.bind(this);
   }
 
 /*
@@ -101,6 +99,32 @@ class HomeScreen extends React.Component {
       this._getLocationAsync();
     }
   }
+
+  //Function to use for navigation
+  async getDirections(startLoc, destinationLoc) {
+  try {
+    //Fetching the route from google maps api
+        let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&key=${ GOOGLE_MAPS_APIKEY }`)
+        let respJson = await resp.json();
+        //The line that connects the locations
+        let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+        console.log(points);
+        console.log(startLoc)
+        console.log(destinationLoc)
+        let coords = points.map((point, index) => {
+            return  {
+                latitude : point[0],
+                longitude : point[1]
+            }
+        })
+        this.setState({coords: coords})
+        return coords
+    } 
+    catch(error) {
+        alert(error)
+        return error
+  }
+  } 
 
   //Check if the component successfully mounted on DOM
   async componentDidMount() {
@@ -142,6 +166,8 @@ class HomeScreen extends React.Component {
         maximumAge: 10000
       }
     );
+    //Default values for testing pruposes
+    this.getDirections("41.76727216, -74.99392888", "40.76727216, -73.99392888")
   }
 
   _getLocationAsync = async () => {
@@ -161,55 +187,6 @@ class HomeScreen extends React.Component {
     this._drawer._root.open()
   };
 
-  //Function to use for navigation
-  async getDirections(startLoc, destinationLoc) {
-	try {
-		//Fetching the route from google maps api
-        let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }`)
-        let respJson = await resp.json();
-        //The line that connects the locations
-        let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-        console.log(points);
-        let coords = points.map((point, index) => {
-            return  {
-                latitude : point[0],
-                longitude : point[1]
-            }
-        })
-        this.setState({coords: coords})
-        return coords
-    } 
-    catch(error) {
-        alert(error)
-        return error
-	}
-  } 
-
-
-  //Function to navigate to toilet location. Being worked on
-  handleGetDirections = () => {
-  	const data = 
-  		{
-  			//Default location for now
-	  		destination: {
-	  			latitude: 41.86727216,
-	        	longitude: -72.89392888
-	  		},
-	  		params: [
-		        {
-		          //Always guide user for walking there, not driving etc.
-		          key: "travelmode",
-		          value: "walking"
-		        },
-		        {
-		          key: "dir_action",
-		          value: "navigate"
-		        }
-	      	]
-      	}
-    getDirections(data);
-  	}
-
   static navigationOptions = {title: 'welcome', header: null};
   render() {
     let text = "Loading";
@@ -219,7 +196,7 @@ class HomeScreen extends React.Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    console.log(this.state.markers)
+    //console.log(this.state.markers)
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
       return (
