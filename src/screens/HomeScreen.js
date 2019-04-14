@@ -108,7 +108,7 @@ class HomeScreen extends React.Component {
         let respJson = await resp.json();
         //The line that connects the locations
         let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-        console.log(points);
+        //console.log(points);
         console.log(startLoc)
         console.log(destinationLoc)
         let coords = points.map((point, index) => {
