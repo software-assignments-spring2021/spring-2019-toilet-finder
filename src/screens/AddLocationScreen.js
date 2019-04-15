@@ -232,7 +232,7 @@ class AddLocationScreen extends Component {
 					onPress = {async () => {
 						await
 						this._getLocationAsync();
-						addLocationToDynamo(this.state);
+						addLocationToDynamo(global.state);
 					}}
 					title = "Submit Location"
 				/>
