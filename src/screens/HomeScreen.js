@@ -167,7 +167,7 @@ class HomeScreen extends React.Component {
       }
     );
     //Default values for testing pruposes
-    this.getDirections("41.76727216, -74.99392888", "40.76727216, -73.99392888")
+    // this.getDirections("41.76727216, -74.99392888", "40.76727216, -73.99392888")
   }
 
   _getLocationAsync = async () => {
