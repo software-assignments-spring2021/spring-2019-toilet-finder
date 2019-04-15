@@ -1,12 +1,12 @@
 import React from 'react';
 import App from '../App.js';
 import HomeScreen from '../screens/HomeScreen.js';
-// import AddLocationScreen from '../screens/AddLocationScreen.js';
+import * as AddLocationScreen from '../screens/AddLocationScreen';
 import renderer from 'react-test-renderer';
 
 //Yuankai's Tests
 // const longLatToString = require("../screens/AddLocationScreen.js");
-var AddLocationScreen = require("../screens/AddLocationScreen.js");
+// var AddLocationScreen = require("../screens/AddLocationScreen.js");
 
 test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => {
 	//Mock object to be made
