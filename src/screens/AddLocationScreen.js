@@ -42,7 +42,7 @@ function addLocationToDynamo(state) {
 			"unisex": state.unisex,
 			"disabled": state.disabled,
 			"baby": state.baby,
-			"paytouse": state.paytouse,
+			"paytouse": state.payToUse,
 			"upvote": state.upvote,
 			"downvote": state.downvote
 		}
@@ -100,7 +100,7 @@ class AddLocationScreen extends Component {
 			unisex: false,
 			baby: false,
 			disabled: false,
-			paytouse: false,
+			payToUse: false,
 			upvote: false,
 			downvote: false,
 		};
@@ -141,7 +141,7 @@ class AddLocationScreen extends Component {
 	}
 	paytouseChecked() {
 		this.setState({
-			paytouse:!this.state.paytouse
+			paytouse:!this.state.payToUse
 		})
 		alert("works!")
 	}
@@ -188,23 +188,23 @@ class AddLocationScreen extends Component {
 					<Text>Baby</Text><CheckBox
 						center
 						value={this.state.baby}
-						title="Unisex"
+						title="Baby"
 						checked={this.state.checked}
 						onChange={()=>this.boxChecked()}
 					/>
 					<Text>Disabled</Text><CheckBox
 						center
 						value={this.state.disabled}
-						title="Unisex"
+						title="Disabled"
 						checked={this.state.checked}
 						onChange={()=>this.disabledChecked()}
 					/>
 					<Text>Pay to Use</Text><CheckBox
 						center
-						value={this.state.paytouse}
-						title="Unisex"
+						value={this.state.payToUse}
+						title="Pay To Use"
 						checked={this.state.checked}
-						onChange={()=>this.paytouseChecked()}
+						onChange={()=>this.payToUseChecked()}
 					/>
 				</View>
 				<Text>Rate: </Text> 
