@@ -109,16 +109,14 @@ class HomeScreen extends React.Component {
         //The line that connects the locations
         let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
         //console.log(points);
-        console.log(startLoc)
-        console.log(destinationLoc)
         let coords = points.map((point, index) => {
             return  {
                 latitude : point[0],
                 longitude : point[1]
             }
         })
-        this.setState({coords: coords})
-        return coords
+        //Add the points we need to draw the polyline to state
+        this.setState({coords: coords});
     } 
     catch(error) {
         alert(error)
@@ -143,6 +141,8 @@ class HomeScreen extends React.Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
+        //Creates the line for navigation. It is here for now because the "navigate" button on a toilet screen is yet to be made. Guides to a Bobst location for now
+        this.getDirections(`${userState.latitude}, ${userState.longitude}`, "40.7295, -73.9972")
         // query the database for toilet locations
         ddb.query(params, (err, data) => {
           if (err) {
@@ -166,8 +166,6 @@ class HomeScreen extends React.Component {
         maximumAge: 10000
       }
     );
-    //Default values for testing pruposes
-    // this.getDirections("41.76727216, -74.99392888", "40.76727216, -73.99392888")
   }
 
   _getLocationAsync = async () => {
@@ -196,7 +194,7 @@ class HomeScreen extends React.Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    //console.log(this.state.markers)
+    console.log(this.state.markers)
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
       return (
@@ -241,6 +239,10 @@ class HomeScreen extends React.Component {
               >
               </MapView.Marker>
             ))}
+             <MapView.Polyline 
+              coordinates={this.state.coords}
+              strokeWidth={2}
+              strokeColor="red"/>
           </MapView>
           <Button block onPress={()=> Alert.alert("Finding Bathrooms...")} style={{backgroundColor: '#EFE1B0'}}>
             <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
