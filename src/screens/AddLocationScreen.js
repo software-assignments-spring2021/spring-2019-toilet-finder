@@ -22,36 +22,89 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 //Adds a location to dynamodb using given data passed in 
 function addLocationToDynamo(state) {
 
-	/* 
-		parameters to be entered into the database
-		TableName = the name of the dynamodb database (do not change this)
-		Item = the attributes (columns) and their data
-			long_lat (required) = the partition key to uniquely identify the location 
-			spec_type (required) = the sort key to group data entries by location, tags, or reviews
-				these are hard-coded into the object being passed in already
-			name, longitude and latitude all come from the user
-	*/
-	var params = {
-		TableName: "toilets",
-		Item: {
-			"long_lat": longLatToString(state.location['coords']['longitude'], state.location['coords']['latitude']),
-			"spec_type": state.loc,
-			"name": state.name,
-			"longitude": state.location['coords']['longitude'],
-			"latitude": state.location['coords']['latitude'],
-			"unisex": state.unisex,
-			"disabled": state.disabled,
-			"baby": state.baby,
-			"paytouse": state.payToUse,
-			"upvote": state.upvote,
-			"downvote": state.downvote
-		}
-	}
+	// unpacking variables to be stored in the DB
+  var now = Date.now().toString();
+  var longLat = longLatToString(state.location['coords']['longitude'], state.location['coords']['latitude']);
+  var longitude = state.location['coords']['longitude'];
+  var latitude = state.location['coords']['latitude'];
 
-	//sending data to the database
-	ddb.put(params, function(err, data) {
+  /* 
+		parameters to be entered into the database
+		RequestItems: {
+      "TABLE_NAME": [
+        ARRAY_OF_REQUESTS
+        {
+          PutRequest: {
+            Item: {
+              "long_lat": PARTITION_KEY (REQUIRED)
+              "spec_type": SORT_KEY (REQUIRED)
+              other attributed depend on the spec_type
+            }
+          }
+        },
+        {
+          make multiple putrequests by adding another object
+        }
+      ]
+    }
+  */
+	var params = {
+		RequestItems: {
+			"toilets": [
+				{
+					PutRequest: {   // put longitude latitude info
+						Item: {
+              "long_lat": longLat,
+              "timestamp": addKey(now),
+              "spec_type": state.loc,
+              "name": state.name,
+              "longitude": longitude,
+              "latitude": latitude
+            }
+          }
+        },
+        {
+          PutRequest: {   // put user description
+            Item: {
+              "long_lat": longLat,
+              "timestamp": addKey(now),
+              "spec_type": state.description,
+              "desc": state.desc
+            }
+          }
+        },
+        {
+          PutRequest: {   // put tag info
+            Item: {
+              "long_lat": longLat,
+              "timestamp": addKey(now),
+              "spec_type": state.tag,
+              "unisex": state.unisex,
+              "disabled": state.disabled,
+              "baby": state.baby,
+              "paytouse": state.payToUse
+            }
+          }
+        },
+        {
+          PutRequest: {   // put ratings info
+            Item: {
+              "long_lat": longLat,
+              "timestamp": addKey(now),
+              "spec_type": state.rating,
+              "upvote": state.upvote,
+			        "downvote": state.downvote
+            }
+          }
+				}
+			]
+		}
+  };
+
+	// sending data to the database
+	ddb.batchWrite(params, function(err, data) {
 	  if (err) {
-	    console.log("Error", err.code, err.message);
+      console.log("Error", err);
 	  } else {
 	    console.log("Data has been entered into ", data.TableNames);
 	  }
@@ -68,7 +121,10 @@ function randomizer(){
 function addKey(str){
 	//Should randomize more after discussing with the team
 	let add = "-";
-	add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
 	let key = str.concat(add);
 	return key;
 }
@@ -77,9 +133,7 @@ export function longLatToString(long, lat) {
 	var longString = long.toString();
 	var latString = lat.toString();
 	let str = longString + "+" + latString;
-	str = addKey(str);
-	//Print out key to see if it is working correctly
-	console.log(str);
+
 	return str;
 }
 
@@ -90,13 +144,16 @@ class AddLocationScreen extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			name: '',
+      name: '',
+      desc: '',
 			long_lat: '',
 			location: null,
 			errorMessage: null,
 			loc: "loc",
 			tag: "tag",
-			review: "review",
+      review: "review",
+      description: "desc",
+      rating: "rating",
 			unisex: false,
 			baby: false,
 			disabled: false,
@@ -110,14 +167,14 @@ class AddLocationScreen extends Component {
 	_getLocationAsync = async () => {
 
 		//making sure to get user permission first
-		let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
 		if (status !== 'granted') {
 			this.setState({
 				errorMessage: 'Permission to access location was denied',
 			});
 		}
-		let location = await Location.getCurrentPositionAsync({});
-		this.setState({ location });
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
 	};
 
 	//functions for when tags are checked
@@ -139,7 +196,7 @@ class AddLocationScreen extends Component {
 		})
 		alert("works!")
 	}
-	paytouseChecked() {
+	payToUseChecked() {
 		this.setState({
 			paytouse:!this.state.payToUse
 		})
@@ -190,7 +247,7 @@ class AddLocationScreen extends Component {
 						value={this.state.baby}
 						title="Baby"
 						checked={this.state.checked}
-						onChange={()=>this.boxChecked()}
+						onChange={()=>this.babyChecked()}
 					/>
 					<Text>Disabled</Text><CheckBox
 						center
@@ -230,9 +287,8 @@ class AddLocationScreen extends Component {
 					//TODO: add alert for when submission is successful and when it isn't
 					style={{padding: 20}}
 					onPress = {async () => {
-						await
-						this._getLocationAsync();
-						addLocationToDynamo(global.state);
+            await this._getLocationAsync();
+            addLocationToDynamo(this.state);
 					}}
 					title = "Submit Location"
 				/>
