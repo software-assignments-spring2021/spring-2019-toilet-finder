@@ -10,10 +10,8 @@ import renderer from 'react-test-renderer';
 
 test('converts 1.1 and 2.2 to strings and combines them to make 1.1+2.2', () => {
 	//Mock object to be made
-	let str = "1.1+2.2-";
+	let str = "1.1+2.2";
 	let compare = AddLocationScreen.longLatToString(1.1, 2.2);
-	let i = compare.length;
-	str = str.concat(compare[i-1]);
 	expect(compare).toBe(str);
 })
 
