@@ -104,23 +104,27 @@ class HomeScreen extends React.Component {
   async getDirections(startLoc, destinationLoc) {
   try {
     //Fetching the route from google maps api
-        let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&key=${ GOOGLE_MAPS_APIKEY }`)
-        let respJson = await resp.json();
-        //The line that connects the locations
-        let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-        //console.log(points);
-        let coords = points.map((point, index) => {
-            return  {
-                latitude : point[0],
-                longitude : point[1]
-            }
-        })
-        //Add the points we need to draw the polyline to state
-        this.setState({coords: coords});
+    let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking&key=${ GOOGLE_MAPS_APIKEY }`)
+
+    let respJson = await resp.json();
+    respJson.routes[0].legs[0].steps[0].travel_mode = "WALKING";
+    //The line that connects the locations
+    let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+    //console.log(points);
+    let coords = points.map((point, index) => {
+        return  {
+            latitude : point[0],
+            longitude : point[1]
+        }
+    })
+    //Add the points we need to draw the polyline to state
+    this.setState({coords: coords});
+    //This alerts the distance from current location to destination and ETA by walking
+    alert("Distance: " + respJson.routes[0].legs[0].distance.text + "\n" + "ETA: " + respJson.routes[0].legs[0].duration.text);
     } 
     catch(error) {
-        alert(error)
-        return error
+      alert(error)
+      return error
   }
   } 
 
@@ -141,8 +145,7 @@ class HomeScreen extends React.Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
-        //Creates the line for navigation. It is here for now because the "navigate" button on a toilet screen is yet to be made. Guides to a Bobst location for now
-        this.getDirections(`${userState.latitude}, ${userState.longitude}`, "40.7295, -73.9972")
+        
         // query the database for toilet locations
         ddb.query(params, (err, data) => {
           if (err) {
@@ -158,6 +161,9 @@ class HomeScreen extends React.Component {
             });
           }
         });
+        //Creates the line for navigation. It is here for now because the "navigate" button on a toilet screen is yet to be made. Guides to a Bobst location for now
+        let destination = "40.7295, -73.9972";
+        this.getDirections(`${userState.latitude}, ${userState.longitude}`, destination)
       },
       errorAlert,
       {
@@ -194,7 +200,7 @@ class HomeScreen extends React.Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    console.log(this.state.markers)
+    //console.log(this.state.markers)
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
       return (
