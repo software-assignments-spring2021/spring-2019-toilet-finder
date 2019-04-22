@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 
 export default class MapCallout extends React.Component {
 	render() {
