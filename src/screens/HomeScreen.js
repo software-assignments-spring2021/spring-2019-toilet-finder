@@ -31,6 +31,7 @@ import SideBar from './SideBar';
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
+import MapCallout from '../components/MapCallout';
 
 
 var AWS = require('aws-sdk')
@@ -121,12 +122,12 @@ class HomeScreen extends React.Component {
     this.setState({coords: coords});
     //This alerts the distance from current location to destination and ETA by walking
     alert("Distance: " + respJson.routes[0].legs[0].distance.text + "\n" + "ETA: " + respJson.routes[0].legs[0].duration.text);
-    } 
+    }
     catch(error) {
       alert(error)
       return error
   }
-  } 
+  }
 
   //Check if the component successfully mounted on DOM
   async componentDidMount() {
@@ -145,7 +146,7 @@ class HomeScreen extends React.Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015
         };
-        
+
         // query the database for toilet locations
         ddb.query(params, (err, data) => {
           if (err) {
@@ -190,6 +191,12 @@ class HomeScreen extends React.Component {
   openDrawer(){
     this._drawer._root.open()
   };
+
+  goToMarkerDetails = (location) => {
+    this.props.navigator.push({
+
+    })
+  }
 
   static navigationOptions = {title: 'welcome', header: null};
   render() {
@@ -241,11 +248,19 @@ class HomeScreen extends React.Component {
               <MapView.Marker
                 key={marker.long_lat}
                 coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
-                title={marker.name}
               >
+                <MapView.Callout
+                  title={marker.name}
+                >
+                  <MapCallout
+                    name={marker.name}
+                    location="test location"
+                    description="test description"
+                    />
+                </MapView.Callout>
               </MapView.Marker>
             ))}
-             <MapView.Polyline 
+             <MapView.Polyline
               coordinates={this.state.coords}
               strokeWidth={2}
               strokeColor="red"/>
