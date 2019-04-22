@@ -254,8 +254,9 @@ class HomeScreen extends React.Component {
                 >
                   <MapCallout
                     name={marker.name}
-                    location="test location"
+                    rating="test rating"
                     description="test description"
+                    tags="test tags"
                     />
                 </MapView.Callout>
               </MapView.Marker>
