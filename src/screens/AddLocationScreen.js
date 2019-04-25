@@ -182,37 +182,31 @@ class AddLocationScreen extends Component {
 		this.setState({
 			unisex:!this.state.unisex
 		})
-		alert("works!")
 	}
 	babyChecked() {
 		this.setState({
 			baby:!this.state.baby
 		})
-		alert("works!")
 	}
 	disabledChecked() {
 		this.setState({
 			disabled:!this.state.disabled
 		})
-		alert("works!")
 	}
 	payToUseChecked() {
 		this.setState({
 			paytouse:!this.state.payToUse
 		})
-		alert("works!")
 	}
 	upChecked() {
 		this.setState({
 			upvote:!this.state.upvote
 		})
-		alert("works!")
 	}
 	downChecked() {
 		this.setState({
 			downvote:!this.state.downvote
 		})
-		alert("works!")
 	}
 
 
