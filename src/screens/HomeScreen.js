@@ -18,7 +18,10 @@ import {
   Right,
   Icon,
   Title,
-  Drawer
+  Drawer,
+  List,
+  ListItem,
+  Content
 } from 'native-base';
 import {
   Marker,
@@ -27,12 +30,10 @@ import {
   Permissions
 } from "expo";
 import { SearchBar } from "react-native-elements";
-import SideBar from './SideBar';
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
 import MapCallout from '../components/MapCallout';
-
 
 var AWS = require('aws-sdk')
 //Google Maps API key for navigation
@@ -77,16 +78,6 @@ class HomeScreen extends React.Component {
     };
   }
 
-/*
-//Demo function for sorting by distance later
-  sort(array){
-    if (array.length === 0){
-      return "There are no bathrooms near you";
-    }
-    array.sort(function(a, b){return a - b});
-    return array;
-  }
-*/
   handleMarkerPress(event) {
     const markerID = event.nativeEvent.id;
     console.log(markerID);
@@ -126,7 +117,7 @@ class HomeScreen extends React.Component {
     catch(error) {
       alert(error)
       return error
-  }
+  	}
   }
 
   //Check if the component successfully mounted on DOM
@@ -213,7 +204,41 @@ class HomeScreen extends React.Component {
       return (
         <Drawer
           ref={(ref) => {this._drawer = ref}}
-          content={<SideBar navigator={this._navigator} />}
+          //This sets the content of the sidebar
+          content={
+          	<Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
+							<List>
+								<ListItem>
+									<Left>
+										<Icon name="map" style={{color:'black'}}/>
+									</Left>
+									<Button
+										title="Map Button"
+							      type="clear"
+							      onPress={() =>
+							        this.props.navigation.navigate('Home')
+							       }
+							    >
+							      <Text>Toilet Map</Text>
+							    </Button>
+								</ListItem>
+								<ListItem>
+									<Left>
+										<Icon name="add" style={{color:'black'}}/>
+									</Left>
+									<Button
+										title="Add Button"
+					          type="clear"
+					          onPress={() =>
+					            this.props.navigation.navigate('Add')
+					          }
+					        >
+							      <Text>Add Locations</Text>
+							    </Button>
+								</ListItem>
+							</List>
+						</Content>
+          }
           onClose={() => this.closeDrawer()} >
         <Container style={{flex:1}}>
           <Header style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
