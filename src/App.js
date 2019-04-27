@@ -8,10 +8,12 @@ import {
 import "./global.js"
 import HomeScreen from './screens/HomeScreen';
 import AddLocationScreen from './screens/AddLocationScreen';
+import MarkerInfo from './screens/MarkerInfo';
 
 const AppNavigator = createStackNavigator({
     Home: { screen: HomeScreen },
     Add: { screen: AddLocationScreen },
+    Info: { screen: MarkerInfo }
 });
 
 const App = createAppContainer(AppNavigator);
