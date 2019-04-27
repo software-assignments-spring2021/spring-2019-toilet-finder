@@ -78,6 +78,48 @@ class HomeScreen extends React.Component {
     };
   }
 
+  //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
+  iterator(){
+    //Create an object
+    let iterate = function(list){
+      let i = 0;
+      let items = list;
+      this.i = 0;
+      this.items = list;
+    }
+
+    iterate.prototype = {
+      //Get current value
+      getVal: function(){
+        return this.items[this.i];
+      },
+      //Look at what the next closest toilet location is
+      next: function(){
+        this.i++;
+        return this.items[this.i];
+      },
+      //Look at the previously closest toilet location
+      prev: function(){
+        this.i--;
+        return this.items[this.i];
+      }
+    }
+    //This function will be implemented once get the "find nearest locations" system to work
+    /*
+    function get(){
+      let collection = [];
+      let items = [1,2,3,4,5];
+      let iter = new iterate(items);
+      while (iter.items[iter.i] !== undefined){
+        //Put it in a designated list that would be presented to the user... yet to be written 
+        collection.append(iter.items[i])
+        iter.next();
+      }
+    }
+    get();
+    */
+  }
+
   handleMarkerPress(event) {
     const markerID = event.nativeEvent.id;
     console.log(markerID);
