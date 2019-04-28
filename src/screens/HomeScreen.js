@@ -34,7 +34,12 @@ import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
 import MapCallout from '../components/MapCallout';
-import { getLocationData } from '../global.js'
+import { 
+  getLocationData, 
+  getTagData, 
+  getRatingData,
+  getDescription 
+} from '../global.js'
 
 var AWS = require('aws-sdk')
 //Google Maps API key for navigation
@@ -57,10 +62,10 @@ var params = {
     ":spec": "loc"
   },
   FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
-  ProjectionExpression: "#name, longitude, latitude"
+  ProjectionExpression: "longLat, #name, longitude, latitude"
 };
 
-var items = getLocationData('-73.9418873+40.74788');
+var items = getDescription('-73.9418873+40.74788');
 
 class HomeScreen extends React.Component {
 
