@@ -111,7 +111,7 @@ class HomeScreen extends React.Component {
       let items = [1,2,3,4,5];
       let iter = new iterate(items);
       while (iter.items[iter.i] !== undefined){
-        //Put it in a designated list that would be presented to the user... yet to be written 
+        //Put it in a designated list that would be presented to the user... yet to be written
         collection.append(iter.items[i])
         iter.next();
       }
@@ -232,6 +232,15 @@ class HomeScreen extends React.Component {
   }
 
   static navigationOptions = {title: 'welcome', header: null};
+
+  handleOnPressHome = () => {
+    this.props.navigation.navigate('Home')
+  }
+
+  handleOnPressAdd = () => {
+    this.props.navigation.navigate('Add')
+  }
+
   render() {
     let text = "Loading";
 
@@ -251,32 +260,18 @@ class HomeScreen extends React.Component {
           	<Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
 							<List>
 								<ListItem>
-									<Left>
-										<Icon name="map" style={{color:'black'}}/>
-									</Left>
-									<Button
-										title="Map Button"
-							      type="clear"
-							      onPress={() =>
-							        this.props.navigation.navigate('Home')
-							       }
-							    >
-							      <Text>Toilet Map</Text>
-							    </Button>
+									<Body>
+                  <TouchableOpacity onPress={this.handleOnPressHome} >
+                  <Text>Toilet Map</Text>
+                  </TouchableOpacity>
+									</Body>
 								</ListItem>
 								<ListItem>
-									<Left>
-										<Icon name="add" style={{color:'black'}}/>
-									</Left>
-									<Button
-										title="Add Button"
-					          type="clear"
-					          onPress={() =>
-					            this.props.navigation.navigate('Add')
-					          }
-					        >
+									<Body>
+                  <TouchableOpacity onPress={this.handleOnPressAdd} >
 							      <Text>Add Locations</Text>
-							    </Button>
+                  </TouchableOpacity>
+									</Body>
 								</ListItem>
 							</List>
 						</Content>
