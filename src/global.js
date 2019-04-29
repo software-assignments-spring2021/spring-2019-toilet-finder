@@ -20,13 +20,13 @@ AWS.config.credentials = global.creds;
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 
-// For all of the following get functions, pass in the longLat string  
+// For all of the following get functions, pass in the longLat string
 
 function getLocationData(latLong) {
 
   // query parameters
   var params = {
-    TableName: "toilets",     
+    TableName: "toilets",
     ExpressionAttributeNames: {
       "#name": "name"
     },
@@ -39,49 +39,49 @@ function getLocationData(latLong) {
     ProjectionExpression: "#name, longitude, latitude"
   };
 
-  // query database 
+  // query database
   ddb.query(params, (err, data) => {
     if (err) {
       console.log(err);
       return [];          // return empty array if no data so nothing breaks...
-    } else {  
+    } else {
       console.log(data)
       return data.Items;  // return array of location items if query works
     }
   });
 }
 
-function getTagData(latLong) {
-
-  // query parameters
-  var params = {
-    TableName: "toilets",     
-    ExpressionAttributeValues: {                  // set string for use in expressions
-      ":latLong": latLong,
-      ":spec": "tag"
-    },
-    KeyConditionExpression: "longLat = :latLong",  // partition key comparison
-    FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
-    ProjectionExpression: "baby, disabled, paytouse, unisex"
-  };
-
-  // query database 
-  ddb.query(params, (err, data) => {
-    if (err) {
-      console.log(err);
-      return [];          // return empty array if no data so nothing breaks...
-    } else {  
-      console.log(data)
-      return data.Items;  // return array of location items if query works
-    }
-  });
-}
+// function getTagData(latLong) {
+//
+//   // query parameters
+//   var params = {
+//     TableName: "toilets",
+//     ExpressionAttributeValues: {                  // set string for use in expressions
+//       ":latLong": latLong,
+//       ":spec": "tag"
+//     },
+//     KeyConditionExpression: "longLat = :latLong",  // partition key comparison
+//     FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
+//     ProjectionExpression: "baby, disabled, paytouse, unisex"
+//   };
+//
+//   // query database
+//   ddb.query(params, (err, data) => {
+//     if (err) {
+//       console.log(err);
+//       return [];          // return empty array if no data so nothing breaks...
+//     } else {
+//       console.log(data)
+//       return data.Items;  // return array of location items if query works
+//     }
+//   });
+// }
 
 function getRatingData(latLong) {
 
   // query parameters
   var params = {
-    TableName: "toilets",     
+    TableName: "toilets",
     ExpressionAttributeValues: {                  // set string for use in expressions
       ":latLong": latLong,
       ":spec": "rating"
@@ -91,12 +91,12 @@ function getRatingData(latLong) {
     ProjectionExpression: "upvote, downvote"
   };
 
-  // query database 
+  // query database
   ddb.query(params, (err, data) => {
     if (err) {
       console.log(err);
       return [];          // return empty array if no data so nothing breaks...
-    } else {  
+    } else {
       console.log(data)
       return data.Items;  // return array of location items if query works
     }
@@ -107,10 +107,10 @@ function getDescription(latLong) {
 
   // query parameters
   var params = {
-    TableName: "toilets",   
+    TableName: "toilets",
     ExpressionAttributeNames: {
       "#desc": "desc"
-    },  
+    },
     ExpressionAttributeValues: {                  // set string for use in expressions
       ":latLong": latLong,
       ":spec": "desc"
@@ -120,25 +120,20 @@ function getDescription(latLong) {
     ProjectionExpression: "#desc"
   };
 
-  // query database 
+  // query database
   ddb.query(params, (err, data) => {
     if (err) {
       console.log(err);
       return [];          // return empty array if no data so nothing breaks...
-    } else {  
+    } else {
       console.log(data)
       return data.Items;  // return array of location items if query works
     }
   });
 }
 
-export { 
-  getLocationData, 
-  getTagData,
+export {
+  getLocationData,
   getRatingData,
   getDescription
 }
-
-
-
-

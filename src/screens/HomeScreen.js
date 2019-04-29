@@ -36,7 +36,6 @@ import getDirections from 'react-native-google-maps-directions';
 import MapCallout from '../components/MapCallout';
 import {
   getLocationData,
-  getTagData,
   getRatingData,
   getDescription
 } from '../global.js'
@@ -324,10 +323,8 @@ class HomeScreen extends React.Component {
                 <MapView.Callout
                   title={marker.name}
                   onPress={ () => this.props.navigation.navigate('Info', {
-                    name: marker.name,
-                    tags: getTagData(marker.longLat),
-                    rating: getRatingData(marker.longLat),
-                    description: getDescription(marker.longLat)
+                    longLat: marker.longLat,
+                    name: marker.name
                   })}
                 >
                   <MapCallout
