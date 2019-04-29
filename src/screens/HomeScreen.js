@@ -34,11 +34,11 @@ import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
 import MapCallout from '../components/MapCallout';
-import { 
-  getLocationData, 
-  getTagData, 
+import {
+  getLocationData,
+  getTagData,
   getRatingData,
-  getDescription 
+  getDescription
 } from '../global.js'
 
 var AWS = require('aws-sdk')
@@ -54,7 +54,7 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 // parameters for a location scan of the database
 var params = {
-  TableName: "toilets",     
+  TableName: "toilets",
   ExpressionAttributeNames: {
     "#name": "name"
   },
@@ -318,12 +318,17 @@ class HomeScreen extends React.Component {
           >
             {this.state.markers.map((marker, index) => (
               <MapView.Marker
-                key={marker.long_lat}
+                key={marker.longLat}
                 coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
               >
                 <MapView.Callout
                   title={marker.name}
-                  onPress={ () => this.props.navigation.navigate('Info')}
+                  onPress={ () => this.props.navigation.navigate('Info', {
+                    name: marker.name,
+                    tags: getTagData(marker.longLat),
+                    rating: getRatingData(marker.longLat),
+                    description: getDescription(marker.longLat)
+                  })}
                 >
                   <MapCallout
                     name={marker.name}

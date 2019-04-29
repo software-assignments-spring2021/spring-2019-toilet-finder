@@ -285,7 +285,7 @@ class AddLocationScreen extends Component {
 						</Button>
 					</Left>
 					<Body style={{paddingLeft:40}}>
-						<Title style={{color:'black'}}>Toilet Finder</Title>
+						<Title style={{color:'black'}}>Add Location</Title>
 					</Body>
 				</Header>
 				<View style={{paddingTop: 10, flexDirection: 'column'}}>
