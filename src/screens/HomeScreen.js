@@ -294,7 +294,7 @@ class HomeScreen extends React.Component {
               </Button>
             </Left>
             <Body style={{paddingLeft:70}}>
-              <Title style={{color:'black'}}>Toilet Finder</Title>
+              <Title style={{color:'black', fontWeight: 'bold'}}>Toilet Finder</Title>
             </Body>
             <Right>
               <Icon name='search' style={{color:'black'}}/>
