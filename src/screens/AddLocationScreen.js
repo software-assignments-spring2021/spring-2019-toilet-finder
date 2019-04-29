@@ -69,7 +69,7 @@ function addLocationToDynamo(state) {
 				{
 					PutRequest: {   // put longitude latitude info
 						Item: {
-              "long_lat": longLat,
+              "longLat": longLat,
               "timestamp": addKey(now),
               "spec_type": state.loc,
               "name": state.name,
@@ -81,7 +81,7 @@ function addLocationToDynamo(state) {
         {
           PutRequest: {   // put user description
             Item: {
-              "long_lat": longLat,
+              "longLat": longLat,
               "timestamp": addKey(now),
               "spec_type": state.description,
               "desc": state.desc
@@ -91,7 +91,7 @@ function addLocationToDynamo(state) {
         {
           PutRequest: {   // put tag info
             Item: {
-              "long_lat": longLat,
+              "longLat": longLat,
               "timestamp": addKey(now),
               "spec_type": state.tag,
               "unisex": state.unisex,
@@ -104,7 +104,7 @@ function addLocationToDynamo(state) {
         {
           PutRequest: {   // put ratings info
             Item: {
-              "long_lat": longLat,
+              "longLat": longLat,
               "timestamp": addKey(now),
               "spec_type": state.rating,
               "upvote": state.upvote,

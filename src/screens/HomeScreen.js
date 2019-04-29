@@ -34,6 +34,12 @@ import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
 import MapCallout from '../components/MapCallout';
+import { 
+  getLocationData, 
+  getTagData, 
+  getRatingData,
+  getDescription 
+} from '../global.js'
 
 var AWS = require('aws-sdk')
 //Google Maps API key for navigation
@@ -46,15 +52,20 @@ AWS.config.credentials = global.creds;
 // database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
-// test parameters for querying the database
+// parameters for a location scan of the database
 var params = {
-  ExpressionAttributeValues: {  // these are the expression used later
-    ":loc": "loc"
+  TableName: "toilets",     
+  ExpressionAttributeNames: {
+    "#name": "name"
   },
-  KeyConditionExpression: "spec_type = :loc",  // expression used here for comparision with partition key
-  TableName: 'toilets',  // name of the table to be queried
-  IndexName: 'spec_type-index' // name of index for querying by datatype
+  ExpressionAttributeValues: {                  // set string for use in expressions
+    ":spec": "loc"
+  },
+  FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
+  ProjectionExpression: "longLat, #name, longitude, latitude"
 };
+
+var items = getDescription('-73.9418873+40.74788');
 
 class HomeScreen extends React.Component {
 
@@ -181,13 +192,12 @@ class HomeScreen extends React.Component {
         };
 
         // query the database for toilet locations
-        ddb.query(params, (err, data) => {
+        ddb.scan(params, (err, data) => {
           if (err) {
             console.log("Error", err);
           } else {
             // set the list of markers in the state and update map to user lat and long
-            //this.state.markers = data.Items;
-            //this.state.region = userState;
+            console.log(data)
             this.setState({
               markers: data.Items,
               region:userState,
