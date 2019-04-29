@@ -9,6 +9,15 @@ import {
 
 } from 'native-base';
 
+var AWS = require('aws-sdk')
+
+// aws config using global obtained credentials
+AWS.config.region = 'us-east-1';
+AWS.config.credentials = global.creds;
+
+//database connection
+var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+
 export default class MarkerInfo extends React.Component {
 	constructor(props) {
 		super(props);
