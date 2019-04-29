@@ -314,7 +314,8 @@ class HomeScreen extends React.Component {
                 <MapView.Callout
                   title={marker.name}
                   onPress={ () => this.props.navigation.navigate('Info', {
-                    name: marker.name
+                    name: marker.name,
+                    disabled: marker.disabled
                   })}
                 >
                   <MapCallout
