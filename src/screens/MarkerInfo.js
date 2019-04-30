@@ -36,7 +36,7 @@ export default class MarkerInfo extends React.Component {
 		this.params = this.props.navigation.state.params;
 		this.state = tagBuilder();
 	}
-
+	
 	static navigationOptions = {
 		title: 'Location Information',
 		headerStyle: {
@@ -46,33 +46,33 @@ export default class MarkerInfo extends React.Component {
 
 	componentDidMount() {
 		console.log('mounted');
-	  	// query parameters
-	  	var param = {
-	    		TableName: "toilets",
-	    		ExpressionAttributeValues: {                   // set string for use in expressions
-	      		":latLong": this.params.longLat,
-	      		":spec": "tag"
-	    		},
-	    		KeyConditionExpression: "longLat = :latLong",  // partition key comparison
-	    		FilterExpression: "spec_type = :spec",         // filter my loc to get all locations
-	    		ProjectionExpression: "baby, disabled, paytouse, unisex"
+			// query parameters
+			var param = {
+			TableName: "toilets",
+			ExpressionAttributeValues: {                   // set string for use in expressions
+				":latLong": this.params.longLat,
+				":spec": "tag"
+			},
+			KeyConditionExpression: "longLat = :latLong",  // partition key comparison
+			FilterExpression: "spec_type = :spec",         // filter my loc to get all locations
+			ProjectionExpression: "baby, disabled, paytouse, unisex"
 		};
 
-	// query database
-	ddb.query(param, (err, data) => {
-		if (err) {
-			console.log(err);
-			return [];  // return empty array if no data so nothing breaks...
-		} else {
-			console.log(data);
-			this.setState({
-				isLoading: false,
-				baby: data.Items[0].baby,
-				disabled: data.Items[0].disabled,
-				paytouse: data.Items[0].paytouse,
-				unisex: data.Items[0].unisex
-			});
-				}
+		// query database
+		ddb.query(param, (err, data) => {
+			if (err) {
+				console.log(err);
+				return [];  // return empty array if no data so nothing breaks...
+			} else {
+				console.log(data);
+				this.setState({
+					isLoading: false,
+					baby: data.Items[0].baby,
+					disabled: data.Items[0].disabled,
+					paytouse: data.Items[0].paytouse,
+					unisex: data.Items[0].unisex
+				});
+			}
 		});
 	}
 
@@ -88,31 +88,31 @@ export default class MarkerInfo extends React.Component {
 							<Button danger><Text> Downvote </Text></Button>
 						</View>
 						<List>
-            	<ListItem>
-              	<Text>Baby: {this.state.baby.toString()}</Text>
-            	</ListItem>
-            	<ListItem>
-              	<Text>Disabled: {this.state.disabled.toString()}</Text>
-            	</ListItem>
-            	<ListItem>
-              	<Text>Pay to Use: {this.state.paytouse.toString()}</Text>
-            	</ListItem>
 							<ListItem>
-              	<Text>Unisex: {this.state.unisex.toString()}</Text>
-            	</ListItem>
-          	</List>
+								<Text>Baby: {this.state.baby.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Disabled: {this.state.disabled.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Pay to Use: {this.state.paytouse.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Unisex: {this.state.unisex.toString()}</Text>
+							</ListItem>
+						</List>
 					</Content>
 				</Container>
 			);
 		} else {
 			return(
-      	<View style = {{justifyContent: 'center', alignItems: 'center', height:'100%', width:'100%'}}>
-        	<Image
-          	style = {styles.load}
-            source={{uri: 'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}}
-          />
-     		</View>
-  		)
+				<View style = {{justifyContent: 'center', alignItems: 'center', height:'100%', width:'100%'}}>
+					<Image
+						style = {styles.load}
+						source={{uri: 'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}}
+					/>
+				</View>
+			)
 		}
 	}
 }
@@ -120,6 +120,6 @@ export default class MarkerInfo extends React.Component {
 const styles = StyleSheet.create({
 	load: {
 		height: 200,
-    width: 200,
-  }
+		width: 200,
+	}
 });
