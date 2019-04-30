@@ -25,6 +25,7 @@ import {
 } from 'native-base';
 import {
   Marker,
+  Updates,
   Constants,
   Location,
   Permissions
@@ -341,7 +342,7 @@ class HomeScreen extends React.Component {
               strokeWidth={2}
               strokeColor="red"/>
           </MapView>
-          <Button block onPress={()=> Alert.alert("Finding Bathrooms...")} style={{backgroundColor: '#EFE1B0'}}>
+          <Button block style={{backgroundColor: '#EFE1B0'}}>
             <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
           </Button>
         </Container>

@@ -22,7 +22,7 @@ import {
   Content,
 	Form
 } from 'native-base';
-import { Constants, MapView, Location, Permissions} from 'expo';
+import { Constants, MapView, Location, Permissions, Updates} from 'expo';
 
 var AWS = require('aws-sdk')
 
@@ -113,6 +113,7 @@ function addLocationToDynamo(state) {
 	  } else {
 	    console.log("Data has been entered into ", data.TableNames);
 			Alert.alert("Success! location has been added.");
+			setTimeout(function() { Updates.reloadFromCache(); }, 1000);
 	  }
 	});
 }
