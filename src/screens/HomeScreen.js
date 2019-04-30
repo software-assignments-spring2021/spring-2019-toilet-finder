@@ -71,6 +71,7 @@ class HomeScreen extends React.Component {
 
   constructor(props){
     super(props);
+    this.onClick = this.onClick.bind(this);
     this.state = {
       //State of the initial region
       region:{
@@ -86,7 +87,15 @@ class HomeScreen extends React.Component {
       isLoading: true,
       //Locations of bathrooms to be stored
       markers: [],
+      showSearchBar: false,
     };
+  }
+
+  onClick() {
+    let { showSearchBar } = this.state;
+    this.setState({
+      showSearchBar: !showSearchBar
+    });
   }
 
   //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
@@ -251,8 +260,13 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Add')
   }
 
+  handleOnPressSearch = () => {
+    this.props.navigation.navigate('Search')
+  }
+
   render() {
     let text = "Loading";
+    const { showSearchBar } = this.state;
 
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
@@ -283,6 +297,13 @@ class HomeScreen extends React.Component {
                   </TouchableOpacity>
 									</Body>
 								</ListItem>
+                <ListItem>
+									<Body>
+                  <TouchableOpacity onPress={this.handleOnPressSearch} >
+							      <Text>Search Bathrooms</Text>
+                  </TouchableOpacity>
+									</Body>
+								</ListItem>
 							</List>
 						</Content>
           }
@@ -294,12 +315,9 @@ class HomeScreen extends React.Component {
               <Icon name="md-menu"  style={{color:'black'}} />
               </Button>
             </Left>
-            <Body style={{paddingLeft:70}}>
+            <Body style={{paddingLeft:40}}>
               <Title style={{color:'black', fontWeight: 'bold'}}>Toilet Finder</Title>
             </Body>
-            <Right>
-              <Icon name='search' style={{color:'black'}}/>
-            </Right>
           </Header>
           <MapView
             style={styles.map}
