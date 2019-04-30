@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import {
 	View,
-	Text,
 	StyleSheet,
 	TextInput,
-	CheckBox,
+	Alert,
 	TouchableOpacity,
   TouchableHighlight
 } from 'react-native';
 import {
   Container,
-  Header,
-  Left,
   Body,
-  Right,
   Icon,
+	Item,
+	Input,
   Title,
+	Text,
 	Button,
-  Drawer,
+	CheckBox,
   List,
   ListItem,
-  Content
+  Content,
+	Form
 } from 'native-base';
 import { Constants, MapView, Location, Permissions} from 'expo';
 
@@ -100,18 +100,7 @@ function addLocationToDynamo(state) {
               "paytouse": state.payToUse
             }
           }
-        },
-        {
-          PutRequest: {   // put ratings info
-            Item: {
-              "longLat": longLat,
-              "timestamp": addKey(now),
-              "spec_type": state.rating,
-              "upvote": state.upvote,
-			        "downvote": state.downvote
-            }
-          }
-				}
+        }
 			]
 		}
   };
@@ -120,8 +109,10 @@ function addLocationToDynamo(state) {
 	ddb.batchWrite(params, function(err, data) {
 	  if (err) {
       console.log("Error", err);
+			Alert.alert("Error, unable to submit location.");
 	  } else {
 	    console.log("Data has been entered into ", data.TableNames);
+			Alert.alert("Success! location has been added.");
 	  }
 	});
 }
@@ -152,7 +143,7 @@ export function longLatToString(long, lat) {
 	return str;
 }
 
-class AddLocationScreen extends Component {
+export default class AddLocationScreen extends Component {
 
 
 	//user data to be sent to the database
@@ -173,10 +164,15 @@ class AddLocationScreen extends Component {
 			baby: false,
 			disabled: false,
 			payToUse: false,
-			upvote: false,
-			downvote: false,
 		};
 	}
+
+	static navigationOptions = {
+		title: 'Add Location',
+		headerStyle: {
+			backgroundColor: '#EFE1B0'
+		}
+	};
 
 	//function to get the user's location data
 	_getLocationAsync = async () => {
@@ -192,53 +188,10 @@ class AddLocationScreen extends Component {
     this.setState({ location });
 	};
 
-	//functions for when tags are checked
-	unisexChecked() {
-		this.setState({
-			unisex:!this.state.unisex
-		})
-	}
-	babyChecked() {
-		this.setState({
-			baby:!this.state.baby
-		})
-	}
-	disabledChecked() {
-		this.setState({
-			disabled:!this.state.disabled
-		})
-	}
-	payToUseChecked() {
-		this.setState({
-			paytouse:!this.state.payToUse
-		})
-	}
-	upChecked() {
-		this.setState({
-			upvote:!this.state.upvote
-		})
-	}
-	downChecked() {
-		this.setState({
-			downvote:!this.state.downvote
-		})
-	}
-
-	closeDrawer(){
-		this._drawer._root.close()
-	};
-
-	openDrawer(){
-		this._drawer._root.open()
-	};
-
 	goToMarkerDetails = (location) => {
 		this.props.navigator.push({
-
 		})
 	}
-
-	static navigationOptions = {title: 'welcome', header: null};
 
 	handleOnPressHome = () => {
 		this.props.navigation.navigate('Home')
@@ -251,123 +204,70 @@ class AddLocationScreen extends Component {
 	//rendering of the app screen
 	render() {
 		return (
-			<Drawer
-				ref={(ref) => {this._drawer = ref}}
-				//This sets the content of the sidebar
-				content={
-					<Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
-						<List>
-							<ListItem>
-								<Body>
-								<TouchableOpacity onPress={this.handleOnPressHome} >
-								<Text>Toilet Map</Text>
-								</TouchableOpacity>
-								</Body>
-							</ListItem>
-							<ListItem>
-								<Body>
-								<TouchableOpacity onPress={this.handleOnPressAdd} >
-									<Text>Add Locations</Text>
-								</TouchableOpacity>
-								</Body>
-							</ListItem>
+			<Container style={{flex:1, backgroundColor: '#fff5ef'}}>
+			<View style={{paddingTop: 10, flexDirection: 'column'}}>
+				<Form>
+				<Item>
+          <Input placeholder="Enter a Location Name Here"
+					onChangeText={(text) => this.setState({name: text})} />
+        </Item>
+				<Item>
+	            <Input placeholder="Description"
+							onChangeText={(text) => this.setState({desc: text})} />
+	      </Item>
+				</Form>
 
-						</List>
-					</Content>
-				}
-				onClose={() => this.closeDrawer()} >
-				<Container style={{flex:1}}>
-				<Header
-				style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
-					<Left>
-						<Button transparent onPress={()=> this.openDrawer()}>
-						<Icon name="md-menu"  style={{color:'black'}} />
-						</Button>
-					</Left>
-					<Body style={{paddingLeft:40}}>
-						<Title style={{color:'black'}}>Add Location</Title>
+				<ListItem onPress={()=> this.setState({ unisex: !this.state.unisex })}>
+					<CheckBox value={this.state.unisex}
+					title="Unisex"
+					checked={this.state.unisex}
+					onPress={()=> this.setState({ unisex: !this.state.unisex })}/>
+					<Body>
+						<Text>Unisex</Text>
 					</Body>
-				</Header>
-				<View style={{paddingTop: 10, flexDirection: 'column'}}>
-					<Text>Name: </Text>
-					<TextInput	//text input box for the user to enter the location name
-						style={{height: 30, borderColor: 'gray', borderWidth: 1}}
-						placeholder="Enter a Location Name Here"
-						onChangeText={(text) => this.setState({name: text})}
-					/>
+				</ListItem>
 
-					<Text>Description: </Text>
-					<TextInput	//text input box for the user to enter a description of the location
-						style={{height: 80, borderColor: 'gray', borderWidth: 1}}
-						onChangeText={(text) => this.setState({desc: text})}
-					/>
+				<ListItem onPress={()=> this.setState({ baby: !this.state.baby })}>
+					<CheckBox value={this.state.baby}
+					title="Baby"
+					checked={this.state.baby}
+					onPress={()=> this.setState({ baby: !this.state.baby })}/>
+					<Body>
+						<Text>Baby</Text>
+					</Body>
+				</ListItem>
 
-					<Text>Tags: </Text>
-					<View style={{flexDirection: 'row'}}>
-						<Text>Unisex</Text><CheckBox //checkboxes for tags
-							center
-							value={this.state.unisex}
-							title="Unisex"
-							checked={this.state.checked}
-							onChange={()=>this.unisexChecked()}
-						/>
-						<Text>Baby</Text><CheckBox
-							center
-							value={this.state.baby}
-							title="Baby"
-							checked={this.state.checked}
-							onChange={()=>this.babyChecked()}
-						/>
-						<Text>Disabled</Text><CheckBox
-							center
-							value={this.state.disabled}
-							title="Disabled"
-							checked={this.state.checked}
-							onChange={()=>this.disabledChecked()}
-						/>
-						<Text>Pay to Use</Text><CheckBox
-							center
-							value={this.state.payToUse}
-							title="Pay To Use"
-							checked={this.state.checked}
-							onChange={()=>this.payToUseChecked()}
-						/>
-					</View>
-					<Text>Rate: </Text>
-					<View style={{flexDirection: 'row'}}>
-						<Text>Upvote</Text><CheckBox //checkboxes for tags
-							center
-							value={this.state.check}
-							title="Upvote"
-							checked={this.state.upvote}
-							onChange={()=>this.upChecked()}
-						/>
-						<Text>Downvote</Text><CheckBox
-							center
-							value={this.state.check}
-							title="Downvote"
-							checked={this.state.downvote}
-							onChange={()=>this.downChecked()}
-							//TODO: NEED TO MAKE IT SO YOU CAN'T DOWNVOTE AND UPVOTE IN SAME ENTRY
-						/>
-					</View>
+				<ListItem onPress={()=> this.setState({ disabled: !this.state.disabled })}>
+					<CheckBox value={this.state.disabled}
+					title="Disabled"
+					checked={this.state.disabled}
+					onPress={()=> this.setState({ disabled: !this.state.disabled })}/>
+					<Body>
+						<Text>Disabled</Text>
+					</Body>
+				</ListItem>
 
-					<Button //get the user location on submit button press then send data to db
-						//TODO: add alert for when submission is successful and when it isn't
-						style={{padding: 20}}
-						onPress = {async () => {
-	            await this._getLocationAsync();
-	            addLocationToDynamo(this.state);
-						}}
-					>
-					<Text>Submit</Text>
-					</Button>
-
-				</View>
-				</Container>
-			</Drawer>
+				<ListItem onPress={()=> this.setState({ payToUse: !this.state.payToUse })}>
+					<CheckBox value={this.state.payToUse}
+					title="Pay to Use"
+					checked={this.state.payToUse}
+					onPress={()=> this.setState({ payToUse: !this.state.payToUse })}/>
+					<Body>
+						<Text>Pay to Use</Text>
+					</Body>
+				</ListItem>
+				<Button //get the user location on submit button press then send data to db
+					block light
+					style={{marginTop: 50}}
+					onPress = {async () => {
+						await this._getLocationAsync();
+						addLocationToDynamo(this.state);
+					}}
+				>
+				<Text>Submit</Text>
+				</Button>
+			</View>
+			</Container>
 		);
 	}
 }
-
-export default AddLocationScreen;

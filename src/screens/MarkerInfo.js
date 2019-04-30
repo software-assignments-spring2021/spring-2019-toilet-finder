@@ -19,19 +19,23 @@ AWS.config.credentials = global.creds;
 //database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
+// Builder design pattern
+function tagBuilder() {
+	return {
+		isLoading: true,
+		baby: false,
+		disabled: false,
+		paytouse: false,
+		unisex: false
+	}
+}
+
 export default class MarkerInfo extends React.Component {
 	constructor(props) {
 		super(props);
 		this.params = this.props.navigation.state.params;
-		this.state = {
-			isLoading: true,
-			baby: false,
-			disabled: false,
-			paytouse: false,
-			unisex: false
-		};
+		this.state = tagBuilder();
 	}
-
 
 	static navigationOptions = {
 		title: 'Location Information',
@@ -75,7 +79,7 @@ export default class MarkerInfo extends React.Component {
 	render(){
 		if (this.state.isLoading == false) {
 			return(
-				<Container style={{alignItems: 'center', backgroundColor: '#d6f3ff'}}>
+				<Container style={{alignItems: 'center', backgroundColor: '#fff5ef'}}>
 				<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
 					<Content>
 						<Text style={{fontSize: 20, marginLeft: 60}}>Rating %</Text>
