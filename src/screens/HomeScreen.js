@@ -17,8 +17,10 @@ import {
   Text,
   Right,
   Icon,
+  Item,
   Title,
   Drawer,
+  Input,
   List,
   ListItem,
   Content
@@ -309,15 +311,21 @@ class HomeScreen extends React.Component {
           }
           onClose={() => this.closeDrawer()} >
         <Container style={{flex:1}}>
-          <Header style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
+          <Header searchBar style={{backgroundColor: '#EFE1B0', height: 70, paddingTop: 20}}>
             <Left>
               <Button transparent onPress={()=> this.openDrawer()}>
               <Icon name="md-menu"  style={{color:'black'}} />
               </Button>
             </Left>
-            <Body style={{paddingLeft:40}}>
-              <Title style={{color:'black', fontWeight: 'bold'}}>Toilet Finder</Title>
-            </Body>
+
+            <Item style={{flex: 4, marginLeft: 15, height: 35, marginTop: 5}}>
+              <Icon name="ios-search" />
+              <Input placeholder="Search Location..." />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+
           </Header>
           <MapView
             style={styles.map}
