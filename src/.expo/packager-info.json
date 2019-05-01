@@ -1,7 +1,7 @@
 {
-  "expoServerNgrokUrl": "https://ux-826.nicholasruan.src.exp.direct",
-  "packagerNgrokUrl": "https://packager.ux-826.nicholasruan.src.exp.direct",
-  "ngrokPid": 86162,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
   "expoServerPort": null,
   "packagerPort": null,
