@@ -111,7 +111,6 @@ export default class MarkerInfo extends React.Component {
 		let destination = {lat, long};
 		let userLat = this.props.navigation.state.params.userLat;
 		let userLong = this.props.navigation.state.params.userLong;
-
 		//this.getDirections(`${userLat}, ${userLong}`, destination)
 	}
 
