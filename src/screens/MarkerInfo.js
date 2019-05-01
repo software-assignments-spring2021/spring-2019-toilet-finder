@@ -102,8 +102,6 @@ export default class MarkerInfo extends React.Component {
             </ListItem>
           </List>
 					</Content>
-
-
 				</Container>
 			);
 		} else {
