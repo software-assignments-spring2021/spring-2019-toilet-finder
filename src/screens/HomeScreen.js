@@ -202,7 +202,7 @@ class HomeScreen extends React.Component {
             console.log("Error", err);
           } else {
             // set the list of markers in the state and update map to user lat and long
-            console.log(data)
+            //console.log(data)
             this.setState({
               markers: data.Items,
               region:userState,
@@ -341,7 +341,9 @@ class HomeScreen extends React.Component {
                   title={marker.name}
                   onPress={ () => this.props.navigation.navigate('Info', {
                     longLat: marker.longLat,
-                    name: marker.name
+                    name: marker.name,
+                    userLat: this.state.region.latitude,
+                    userLong: this.state.region.longitude
                   })}
                 >
                   <MapCallout

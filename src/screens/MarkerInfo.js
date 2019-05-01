@@ -9,8 +9,13 @@ import {
 	List,
 	ListItem
 } from 'native-base';
+import Polyline from '@mapbox/polyline';
+import getDirections from 'react-native-google-maps-directions';
 
 var AWS = require('aws-sdk')
+
+//Google Maps API key for navigation
+const GOOGLE_MAPS_APIKEY = 'AIzaSyBXXzi2CvuVF1-ooO1-HZ-2TamYAYW-xSc';
 
 // aws config using global obtained credentials
 AWS.config.region = 'us-east-1';
@@ -44,8 +49,36 @@ export default class MarkerInfo extends React.Component {
 		}
 	};
 
+	/*
+	//Function to use for navigation
+  async getDirections(startLoc, destinationLoc) {
+  try {
+    //Fetching the route from google maps api
+    let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking&key=${ GOOGLE_MAPS_APIKEY }`)
+
+    let respJson = await resp.json();
+    respJson.routes[0].legs[0].steps[0].travel_mode = "WALKING";
+    //The line that connects the locations
+    let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+    let coords = points.map((point, index) => {
+        return  {
+            latitude : point[0],
+            longitude : point[1]
+        }
+    })
+    //Add the points we need to draw the polyline to state
+    this.setState({coords: coords});
+    //This alerts the distance from current location to destination and ETA by walking
+    alert("Distance: " + respJson.routes[0].legs[0].distance.text + "\n" + "ETA: " + respJson.routes[0].legs[0].duration.text);
+    }
+    catch(error) {
+      alert(error)
+      return error
+  	}
+  }
+  */
+
 	componentDidMount() {
-		console.log('mounted');
 			// query parameters
 			var param = {
 			TableName: "toilets",
@@ -57,14 +90,12 @@ export default class MarkerInfo extends React.Component {
 			FilterExpression: "spec_type = :spec",         // filter my loc to get all locations
 			ProjectionExpression: "baby, disabled, paytouse, unisex"
 		};
-
 		// query database
 		ddb.query(param, (err, data) => {
 			if (err) {
 				console.log(err);
 				return [];  // return empty array if no data so nothing breaks...
 			} else {
-				console.log(data);
 				this.setState({
 					isLoading: false,
 					baby: data.Items[0].baby,
@@ -74,6 +105,13 @@ export default class MarkerInfo extends React.Component {
 				});
 			}
 		});
+		let longLat = this.params.longLat.split("+");
+		let long = longLat[0];
+		let lat = longLat[1];
+		let destination = {lat, long};
+		let userLat = this.props.navigation.state.params.userLat;
+		let userLong = this.props.navigation.state.params.userLong;
+		//this.getDirections(`${userLat}, ${userLong}`, destination)
 	}
 
 	render(){
@@ -99,6 +137,11 @@ export default class MarkerInfo extends React.Component {
 							</ListItem>
 							<ListItem>
 								<Text>Unisex: {this.state.unisex.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Button /*onPress={someFunction}*/>
+									<Text>Navigate</Text>
+								</Button>
 							</ListItem>
 						</List>
 					</Content>
