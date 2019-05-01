@@ -32,6 +32,7 @@ import {
   Location,
   Permissions
 } from "expo";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { SearchBar } from "react-native-elements";
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
@@ -73,7 +74,7 @@ class HomeScreen extends React.Component {
 
   constructor(props){
     super(props);
-    this.onClick = this.onClick.bind(this);
+    // this.params = this.props.navigation.state.params;
     this.state = {
       //State of the initial region
       region:{
@@ -89,16 +90,9 @@ class HomeScreen extends React.Component {
       isLoading: true,
       //Locations of bathrooms to be stored
       markers: [],
-      showSearchBar: false,
     };
   }
 
-  onClick() {
-    let { showSearchBar } = this.state;
-    this.setState({
-      showSearchBar: !showSearchBar
-    });
-  }
 
   //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
   iterator(){
@@ -181,7 +175,7 @@ class HomeScreen extends React.Component {
     catch(error) {
       alert(error)
       return error
-  	}
+    }
   }
 
   //Check if the component successfully mounted on DOM
@@ -208,7 +202,7 @@ class HomeScreen extends React.Component {
             console.log("Error", err);
           } else {
             // set the list of markers in the state and update map to user lat and long
-            console.log(data)
+            //console.log(data)
             this.setState({
               markers: data.Items,
               region:userState,
@@ -255,20 +249,22 @@ class HomeScreen extends React.Component {
   static navigationOptions = {title: 'welcome', header: null};
 
   handleOnPressHome = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Home')
   }
 
   handleOnPressAdd = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Add')
   }
 
   handleOnPressSearch = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Search')
   }
 
   render() {
     let text = "Loading";
-    const { showSearchBar } = this.state;
 
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
@@ -283,31 +279,31 @@ class HomeScreen extends React.Component {
           ref={(ref) => {this._drawer = ref}}
           //This sets the content of the sidebar
           content={
-          	<Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
-							<List>
-								<ListItem>
-									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressHome} >
+            <Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
+              <List>
+                <ListItem>
+                  <Body>
+                  <TouchableOpacity onPress={this.handleOnPressHome } >
                   <Text>Toilet Map</Text>
                   </TouchableOpacity>
-									</Body>
-								</ListItem>
-								<ListItem>
-									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressAdd} >
-							      <Text>Add Locations</Text>
-                  </TouchableOpacity>
-									</Body>
-								</ListItem>
+                  </Body>
+                </ListItem>
                 <ListItem>
-									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressSearch} >
-							      <Text>Search Bathrooms</Text>
+                  <Body>
+                  <TouchableOpacity onPress={this.handleOnPressAdd} >
+                    <Text>Add Locations</Text>
                   </TouchableOpacity>
-									</Body>
-								</ListItem>
-							</List>
-						</Content>
+                  </Body>
+                </ListItem>
+                <ListItem>
+                  <Body>
+                  <TouchableOpacity onPress={this.handleOnPressSearch} >
+                    <Text>Search Bathrooms</Text>
+                  </TouchableOpacity>
+                  </Body>
+                </ListItem>
+              </List>
+            </Content>
           }
           onClose={() => this.closeDrawer()} >
         <Container style={{flex:1}}>
@@ -317,15 +313,9 @@ class HomeScreen extends React.Component {
               <Icon name="md-menu"  style={{color:'black'}} />
               </Button>
             </Left>
-
-            <Item style={{flex: 4, marginLeft: 15, height: 35, marginTop: 5}}>
-              <Icon name="ios-search" />
-              <Input placeholder="Search Location..." />
-            </Item>
-            <Button transparent>
-              <Text>Search</Text>
-            </Button>
-
+            <Body style={{paddingLeft:40}}>
+              <Title style={{color:'black', fontWeight: 'bold'}}>Toilet Finder</Title>
+            </Body>
           </Header>
           <MapView
             style={styles.map}
@@ -351,7 +341,9 @@ class HomeScreen extends React.Component {
                   title={marker.name}
                   onPress={ () => this.props.navigation.navigate('Info', {
                     longLat: marker.longLat,
-                    name: marker.name
+                    name: marker.name,
+                    userLat: this.state.region.latitude,
+                    userLong: this.state.region.longitude
                   })}
                 >
                   <MapCallout
