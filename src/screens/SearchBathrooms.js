@@ -28,17 +28,6 @@ export default class SearchBathrooms extends React.Component {
 
 	render(){
 		return (
-			// <Container>
-      //   <Header searchBar rounded style={{backgroundColor: '#EFE1B0'}}>
-      //     <Item>
-      //       <Icon name="ios-search" />
-      //       <Input placeholder="Search" />
-      //     </Item>
-      //     <Button transparent>
-      //       <Text>Search</Text>
-      //     </Button>
-      //   </Header>
-      // </Container>
 			<GooglePlacesAutocomplete
 				placeholder='Search'
 				minLength={2} // minimum length of text to search
