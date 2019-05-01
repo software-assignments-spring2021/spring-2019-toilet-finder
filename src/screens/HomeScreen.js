@@ -32,6 +32,7 @@ import {
   Location,
   Permissions
 } from "expo";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { SearchBar } from "react-native-elements";
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
@@ -73,7 +74,7 @@ class HomeScreen extends React.Component {
 
   constructor(props){
     super(props);
-    this.onClick = this.onClick.bind(this);
+    // this.params = this.props.navigation.state.params;
     this.state = {
       //State of the initial region
       region:{
@@ -89,16 +90,9 @@ class HomeScreen extends React.Component {
       isLoading: true,
       //Locations of bathrooms to be stored
       markers: [],
-      showSearchBar: false,
     };
   }
 
-  onClick() {
-    let { showSearchBar } = this.state;
-    this.setState({
-      showSearchBar: !showSearchBar
-    });
-  }
 
   //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
   iterator(){
@@ -255,20 +249,22 @@ class HomeScreen extends React.Component {
   static navigationOptions = {title: 'welcome', header: null};
 
   handleOnPressHome = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Home')
   }
 
   handleOnPressAdd = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Add')
   }
 
   handleOnPressSearch = () => {
+    this.closeDrawer();
     this.props.navigation.navigate('Search')
   }
 
   render() {
     let text = "Loading";
-    const { showSearchBar } = this.state;
 
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
@@ -287,7 +283,7 @@ class HomeScreen extends React.Component {
 							<List>
 								<ListItem>
 									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressHome} >
+                  <TouchableOpacity onPress={this.handleOnPressHome } >
                   <Text>Toilet Map</Text>
                   </TouchableOpacity>
 									</Body>
@@ -317,15 +313,9 @@ class HomeScreen extends React.Component {
               <Icon name="md-menu"  style={{color:'black'}} />
               </Button>
             </Left>
-
-            <Item style={{flex: 4, marginLeft: 15, height: 35, marginTop: 5}}>
-              <Icon name="ios-search" />
-              <Input placeholder="Search Location..." />
-            </Item>
-            <Button transparent>
-              <Text>Search</Text>
-            </Button>
-
+            <Body style={{paddingLeft:40}}>
+              <Title style={{color:'black', fontWeight: 'bold'}}>Toilet Finder</Title>
+            </Body>
           </Header>
           <MapView
             style={styles.map}
