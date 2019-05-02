@@ -68,10 +68,10 @@ export default class MarkerInfo extends React.Component {
             longitude : point[1]
         }
     })
-    //Add the points we need to draw the polyline to state
+    //Add the points, distance, and ETA for work
     this.setState({coords: coords});
-    //This alerts the distance from current location to destination and ETA by walking
-    alert("Distance: " + respJson.routes[0].legs[0].distance.text + "\n" + "ETA: " + respJson.routes[0].legs[0].duration.text);
+    this.setState({distance: respJson.routes[0].legs[0].distance.text});
+    this.setState({eta: respJson.routes[0].legs[0].duration.text});
     }
     catch(error) {
       alert(error)
@@ -120,7 +120,6 @@ export default class MarkerInfo extends React.Component {
 	    FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
 	    ProjectionExpression: "#desc"
 	  };
-
 		ddb.query(paramDesc, (err, data) => {
 			if (err) {
 				console.log(err);
@@ -138,6 +137,7 @@ export default class MarkerInfo extends React.Component {
 		let destination = {lat, long};
 		let userLat = this.props.navigation.state.params.userLat;
 		let userLong = this.props.navigation.state.params.userLong;
+		//Call function to get directions data to be navigated to
 		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
@@ -178,15 +178,17 @@ export default class MarkerInfo extends React.Component {
 								flex: 2
 						  }}
 						/>
-								<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-								<Text>Disabled: {this.checkIcons(this.state.disabled)}</Text>
-								<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
-								<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
-								<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {
-									coords: this.state.coords
-								})}>
-									<Text>Navigate</Text>
-								</Button>
+							<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
+							<Text>Disabled: {this.checkIcons(this.state.disabled)}</Text>
+							<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
+							<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
+							<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {
+								coords: this.state.coords
+							})}>
+								<Text>Navigate</Text>
+							</Button>
+							<Text>Distance: {this.state.distance}</Text>
+							<Text>ETA: {this.state.eta}</Text>
 					</Content>
 				</Container>
 			);
