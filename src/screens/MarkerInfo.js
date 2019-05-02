@@ -49,7 +49,7 @@ export default class MarkerInfo extends React.Component {
 		}
 	};
 
-	/*
+	
 	//Function to use for navigation
   async getDirections(startLoc, destinationLoc) {
   try {
@@ -76,8 +76,7 @@ export default class MarkerInfo extends React.Component {
       return error
   	}
   }
-  */
-
+  
 	componentDidMount() {
 			// query parameters
 			var param = {
@@ -111,8 +110,7 @@ export default class MarkerInfo extends React.Component {
 		let destination = {lat, long};
 		let userLat = this.props.navigation.state.params.userLat;
 		let userLong = this.props.navigation.state.params.userLong;
-
-		//this.getDirections(`${userLat}, ${userLong}`, destination)
+		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
 	render(){
@@ -140,7 +138,9 @@ export default class MarkerInfo extends React.Component {
 								<Text>Unisex: {this.state.unisex.toString()}</Text>
 							</ListItem>
 							<ListItem>
-								<Button /*onPress={someFunction}*/>
+								<Button onPress={() => this.props.navigation.navigate('Home', {
+									coords: this.state.coords
+								})}>
 									<Text>Navigate</Text>
 								</Button>
 							</ListItem>
