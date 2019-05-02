@@ -11,8 +11,6 @@ var creds = new AWS.CognitoIdentityCredentials({
 // store the obtained credentials in the global variable
 global.creds = creds;
 global.googleMapsAPIKEY = 'AIzaSyBXXzi2CvuVF1-ooO1-HZ-2TamYAYW-xSc';
-
-
 // set credentials for the connection
 AWS.config.credentials = global.creds;
 

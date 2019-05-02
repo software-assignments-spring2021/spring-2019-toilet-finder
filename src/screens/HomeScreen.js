@@ -88,6 +88,7 @@ class HomeScreen extends React.Component {
       errorMessage: null,
       //parameter to prevent multiple renders
       isLoading: true,
+      continue: true,
       //Locations of bathrooms to be stored
       markers: [],
     };
@@ -262,6 +263,7 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Search')
   }
 
+
   render() {
     let text = "Loading";
 
@@ -275,7 +277,12 @@ class HomeScreen extends React.Component {
       //This indicates that the user is asking for a location to be navigated to
       if (this.props.navigation.state.params !== undefined){
         this.state.coords = this.props.navigation.state.params.coords;
+          this.state.region.latitude = this.props.navigation.state.params.searchLat,
+          this.state.region.longitude = this.props.navigation.state.params.searchLong,
+          this.state.region.latitudeDelta = 0.015,
+          this.state.region.longitudeDelta = 0.015
       }
+
       return (
         <Drawer
           ref={(ref) => {this._drawer = ref}}
@@ -350,7 +357,7 @@ class HomeScreen extends React.Component {
                 >
                   <MapCallout
                     name = {marker.name}
-                    longLat = {marker.longLat} 
+                    longLat = {marker.longLat}
                   />
                 </MapView.Callout>
               </MapView.Marker>

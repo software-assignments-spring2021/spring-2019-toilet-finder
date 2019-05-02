@@ -21,7 +21,7 @@ export default class MapCallout extends React.Component {
 	}
 
 	componentDidMount() {
-		
+
 		// query parameters
 		var ratingParams = {
 			TableName: "toilets",
@@ -44,7 +44,7 @@ export default class MapCallout extends React.Component {
 			FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
 			ProjectionExpression: "baby, disabled, paytouse, unisex"
 		};
-		
+
 			// query database
 		ddb.query(ratingParams, (err, data) => {
 			if (err) {
@@ -62,13 +62,13 @@ export default class MapCallout extends React.Component {
 			if (err) {
 				console.log(err);   // return empty array if no data so nothing breaks...
 			} else {
-				console.log('hi')
+				// console.log('hi')
 				// console.log(data);  // return array of location items if query works
 				if (data.Count == 0) {
 					return;
 				} else {
 					this.setState({tags: data.Items[0].baby})
-					console.log(this.state)
+					// console.log(this.state)
 				}
 			}
 		});
