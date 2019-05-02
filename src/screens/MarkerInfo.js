@@ -7,6 +7,7 @@ import {
 	Button,
 	Text,
 	List,
+	Icon,
 	ListItem
 } from 'native-base';
 import Polyline from '@mapbox/polyline';
@@ -31,7 +32,8 @@ function tagBuilder() {
 		baby: false,
 		disabled: false,
 		paytouse: false,
-		unisex: false
+		unisex: false,
+		decription: ''
 	}
 }
 
@@ -41,7 +43,7 @@ export default class MarkerInfo extends React.Component {
 		this.params = this.props.navigation.state.params;
 		this.state = tagBuilder();
 	}
-	
+
 	static navigationOptions = {
 		title: 'Location Information',
 		headerStyle: {
@@ -49,7 +51,7 @@ export default class MarkerInfo extends React.Component {
 		}
 	};
 
-	
+
 	//Function to use for navigation
   async getDirections(startLoc, destinationLoc) {
   try {
@@ -76,10 +78,10 @@ export default class MarkerInfo extends React.Component {
       return error
   	}
   }
-  
+
 	componentDidMount() {
 			// query parameters
-			var param = {
+			var paramTags = {
 			TableName: "toilets",
 			ExpressionAttributeValues: {                   // set string for use in expressions
 				":latLong": this.params.longLat,
@@ -90,7 +92,7 @@ export default class MarkerInfo extends React.Component {
 			ProjectionExpression: "baby, disabled, paytouse, unisex"
 		};
 		// query database
-		ddb.query(param, (err, data) => {
+		ddb.query(paramTags, (err, data) => {
 			if (err) {
 				console.log(err);
 				return [];  // return empty array if no data so nothing breaks...
@@ -104,6 +106,32 @@ export default class MarkerInfo extends React.Component {
 				});
 			}
 		});
+
+		var paramDesc = {
+	    TableName: "toilets",
+	    ExpressionAttributeNames: {
+	      "#desc": "desc"
+	    },
+	    ExpressionAttributeValues: {                  // set string for use in expressions
+	      ":latLong": this.params.longLat,
+	      ":spec": "desc"
+	    },
+	    KeyConditionExpression: "longLat = :latLong",  // partition key comparison
+	    FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
+	    ProjectionExpression: "#desc"
+	  };
+
+		ddb.query(paramDesc, (err, data) => {
+			if (err) {
+				console.log(err);
+				return [];  // return empty array if no data so nothing breaks...
+			} else {
+				console.log("DESCCRIPTION", data);
+				this.setState({
+					description: data.Items[0].desc
+				})
+			}
+		});
 		let longLat = this.params.longLat.split("+");
 		let long = longLat[0];
 		let lat = longLat[1];
@@ -113,38 +141,52 @@ export default class MarkerInfo extends React.Component {
 		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
+	checkIcons(state) {
+		if (state == false) {
+			return <Icon type="FontAwesome" name='remove' />
+		} else {
+			return <Icon type="FontAwesome" name='check' />
+		}
+	}
+
 	render(){
 		if (this.state.isLoading == false) {
 			return(
 				<Container style={{alignItems: 'center', backgroundColor: '#fff5ef'}}>
 					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
 					<Content>
-						<Text style={{fontSize: 20, marginLeft: 60}}>Rating %</Text>
+						<Text>Description: {this.state.description}</Text>
+						<Text style={{fontSize: 20, marginLeft: 60, marginTop: 25}}>Rating %</Text>
+						<View
+						  style={{
+						    borderBottomColor: 'black',
+						    borderBottomWidth: 1,
+								marginBottom: 15,
+								flex: 2
+						  }}
+						/>
 						<View style={{flexDirection: "row"}}>
-							<Button success style={{marginRight: 10}}><Text> Upvote </Text></Button>
-							<Button danger><Text> Downvote </Text></Button>
+							<Button small success style={{marginRight: 10}}><Text> Upvote </Text></Button>
+							<Button small danger><Text> Downvote </Text></Button>
 						</View>
-						<List>
-							<ListItem>
-								<Text>Baby: {this.state.baby.toString()}</Text>
-							</ListItem>
-							<ListItem>
-								<Text>Disabled: {this.state.disabled.toString()}</Text>
-							</ListItem>
-							<ListItem>
-								<Text>Pay to Use: {this.state.paytouse.toString()}</Text>
-							</ListItem>
-							<ListItem>
-								<Text>Unisex: {this.state.unisex.toString()}</Text>
-							</ListItem>
-							<ListItem>
-								<Button onPress={() => this.props.navigation.navigate('Home', {
+						<View
+						  style={{
+						    borderBottomColor: 'black',
+						    borderBottomWidth: 1,
+								marginTop: 15,
+								marginBottom: 15,
+								flex: 2
+						  }}
+						/>
+								<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
+								<Text>Disabled: {this.checkIcons(this.state.disabled)}</Text>
+								<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
+								<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
+								<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {
 									coords: this.state.coords
 								})}>
 									<Text>Navigate</Text>
 								</Button>
-							</ListItem>
-						</List>
 					</Content>
 				</Container>
 			);
