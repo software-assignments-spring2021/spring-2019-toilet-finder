@@ -160,7 +160,6 @@ class HomeScreen extends React.Component {
     respJson.routes[0].legs[0].steps[0].travel_mode = "WALKING";
     //The line that connects the locations
     let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-    //console.log(points);
     let coords = points.map((point, index) => {
         return  {
             latitude : point[0],
@@ -175,7 +174,7 @@ class HomeScreen extends React.Component {
     catch(error) {
       alert(error)
       return error
-  	}
+    }
   }
 
   //Check if the component successfully mounted on DOM
@@ -271,39 +270,42 @@ class HomeScreen extends React.Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    //console.log(this.state.markers)
     //Only render if isLoading is false, which occurrs inside componentDidMount
     if (this.state.isLoading == false){
+      //This indicates that the user is asking for a location to be navigated to
+      if (this.props.navigation.state.params !== undefined){
+        this.state.coords = this.props.navigation.state.params.coords;
+      }
       return (
         <Drawer
           ref={(ref) => {this._drawer = ref}}
           //This sets the content of the sidebar
           content={
-          	<Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
-							<List>
-								<ListItem>
-									<Body>
+            <Content style={{height: 70, paddingTop: 20, backgroundColor: 'white'}}>
+              <List>
+                <ListItem>
+                  <Body>
                   <TouchableOpacity onPress={this.handleOnPressHome } >
                   <Text>Toilet Map</Text>
                   </TouchableOpacity>
-									</Body>
-								</ListItem>
-								<ListItem>
-									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressAdd} >
-							      <Text>Add Locations</Text>
-                  </TouchableOpacity>
-									</Body>
-								</ListItem>
+                  </Body>
+                </ListItem>
                 <ListItem>
-									<Body>
-                  <TouchableOpacity onPress={this.handleOnPressSearch} >
-							      <Text>Search Bathrooms</Text>
+                  <Body>
+                  <TouchableOpacity onPress={this.handleOnPressAdd} >
+                    <Text>Add Locations</Text>
                   </TouchableOpacity>
-									</Body>
-								</ListItem>
-							</List>
-						</Content>
+                  </Body>
+                </ListItem>
+                <ListItem>
+                  <Body>
+                  <TouchableOpacity onPress={this.handleOnPressSearch} >
+                    <Text>Search Bathrooms</Text>
+                  </TouchableOpacity>
+                  </Body>
+                </ListItem>
+              </List>
+            </Content>
           }
           onClose={() => this.closeDrawer()} >
         <Container style={{flex:1}}>
@@ -357,7 +359,7 @@ class HomeScreen extends React.Component {
             ))}
              <MapView.Polyline
               coordinates={this.state.coords}
-              strokeWidth={2}
+              strokeWidth={3}
               strokeColor="red"/>
           </MapView>
           <Button block style={{backgroundColor: '#EFE1B0'}}>
