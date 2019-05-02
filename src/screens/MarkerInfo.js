@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, AsyncStorage, Image, TextInput } from 'react-native';
 import {
 	Container,
 	Header,
@@ -25,6 +25,67 @@ AWS.config.credentials = global.creds;
 //database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
+//For adding comment and rate to dynamodb
+function addReviewToDynamo(state) {
+//
+// 	// unpacking variables to be stored in the DB
+//   var now = Date.now().toString();
+//
+// 	var params = {
+// 		RequestItems: {
+// 			"toilets": [
+//         {
+//           PutRequest: {   // put user comments
+//             Item: {
+//               "longLat": this.params.longLat,
+//               "timestamp": addKey(now),
+//               "spec_type": "comment",
+//               "comment": state.comment
+//             }
+//           }
+//         },
+//         {
+//           PutRequest: {   // put ratings info
+//             Item: {
+//               "longLat": this.params.longLat,
+//               "timestamp": addKey(now),
+//               "spec_type": state.rating,
+//               "upvote": state.upvote,
+// 			        "downvote": state.downvote
+//             }
+//           }
+// 				}
+// 			]
+// 		}
+//   };
+//
+// 	// sending data to the database
+// 	ddb.batchWrite(params, function(err, data) {
+// 	  if (err) {
+//       console.log("Error", err);
+// 	  } else {
+// 	    console.log("Data has been entered into ", data.TableNames);
+// 	  }
+// 	});
+// }
+//
+// //Randomizer function to call when generating primary key
+// function randomizer(){
+// 	let val = Math.floor(Math.random() * Math.floor(10));
+// 	val = val.toString();
+// 	return val;
+// }
+//
+// function addKey(str){
+// 	let add = "-";
+//   add = add.concat(randomizer());
+//   add = add.concat(randomizer());
+//   add = add.concat(randomizer());
+//   add = add.concat(randomizer());
+// 	let key = str.concat(add);
+// 	return key;
+}
+
 // Builder design pattern
 function tagBuilder() {
 	return {
@@ -33,7 +94,10 @@ function tagBuilder() {
 		disabled: false,
 		paytouse: false,
 		unisex: false,
-		decription: ''
+		upvote: 0,
+		downvote: 0,
+		upchecked: false,
+		downchecked: false
 	}
 }
 
@@ -81,7 +145,7 @@ export default class MarkerInfo extends React.Component {
 
 	componentDidMount() {
 			// query parameters
-			var paramTags = {
+			var param = {
 			TableName: "toilets",
 			ExpressionAttributeValues: {                   // set string for use in expressions
 				":latLong": this.params.longLat,
@@ -92,7 +156,7 @@ export default class MarkerInfo extends React.Component {
 			ProjectionExpression: "baby, disabled, paytouse, unisex"
 		};
 		// query database
-		ddb.query(paramTags, (err, data) => {
+		ddb.query(param, (err, data) => {
 			if (err) {
 				console.log(err);
 				return [];  // return empty array if no data so nothing breaks...
@@ -106,32 +170,6 @@ export default class MarkerInfo extends React.Component {
 				});
 			}
 		});
-
-		var paramDesc = {
-	    TableName: "toilets",
-	    ExpressionAttributeNames: {
-	      "#desc": "desc"
-	    },
-	    ExpressionAttributeValues: {                  // set string for use in expressions
-	      ":latLong": this.params.longLat,
-	      ":spec": "desc"
-	    },
-	    KeyConditionExpression: "longLat = :latLong",  // partition key comparison
-	    FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
-	    ProjectionExpression: "#desc"
-	  };
-
-		ddb.query(paramDesc, (err, data) => {
-			if (err) {
-				console.log(err);
-				return [];  // return empty array if no data so nothing breaks...
-			} else {
-				console.log("DESCCRIPTION", data);
-				this.setState({
-					description: data.Items[0].desc
-				})
-			}
-		});
 		let longLat = this.params.longLat.split("+");
 		let long = longLat[0];
 		let lat = longLat[1];
@@ -141,11 +179,34 @@ export default class MarkerInfo extends React.Component {
 		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
-	checkIcons(state) {
-		if (state == false) {
-			return <Icon type="FontAwesome" name='remove' />
+	upvotePress() {
+		if (this.state.downchecked) {
+			alert("Can't vote for both!")
+		} else if (this.state.upchecked) {
+			this.setState({
+				upvote: this.state.upvote-1,
+				upchecked:!this.state.upchecked
+			});
 		} else {
-			return <Icon type="FontAwesome" name='check' />
+			this.setState({
+				upvote: this.state.upvote+1,
+				upchecked:!this.state.upchecked
+			});
+		}
+	}
+	downvotePress() {
+		if (this.state.upchecked) {
+			alert("Can't vote for both!")
+		} else if (this.state.downchecked) {
+			this.setState({
+				downvote: this.state.downvote-1,
+				downchecked:!this.state.downchecked
+			});
+		} else {
+			this.setState({
+				downvote: this.state.downvote+1,
+				downchecked:!this.state.downchecked
+			});
 		}
 	}
 
@@ -153,40 +214,45 @@ export default class MarkerInfo extends React.Component {
 		if (this.state.isLoading == false) {
 			return(
 				<Container style={{alignItems: 'center', backgroundColor: '#fff5ef'}}>
-					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
+					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>{this.params.name}</Text>
 					<Content>
-						<Text>Description: {this.state.description}</Text>
-						<Text style={{fontSize: 20, marginLeft: 60, marginTop: 25}}>Rating %</Text>
-						<View
-						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
-								marginBottom: 15,
-								flex: 2
-						  }}
-						/>
-						<View style={{flexDirection: "row"}}>
-							<Button small success style={{marginRight: 10}}><Text> Upvote </Text></Button>
-							<Button small danger><Text> Downvote </Text></Button>
-						</View>
-						<View
-						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
-								marginTop: 15,
-								marginBottom: 15,
-								flex: 2
-						  }}
-						/>
-								<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-								<Text>Disabled: {this.checkIcons(this.state.disabled)}</Text>
-								<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
-								<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
-								<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {
+						<Text style={{fontSize: 20, marginLeft: 60}}>Rating %</Text>
+						<List>
+							<ListItem>
+								<Text>Baby: {this.state.baby.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Disabled: {this.state.disabled.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Pay to Use: {this.state.paytouse.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Text>Unisex: {this.state.unisex.toString()}</Text>
+							</ListItem>
+							<ListItem>
+								<Button onPress={() => this.props.navigation.navigate('Home', {
 									coords: this.state.coords
 								})}>
 									<Text>Navigate</Text>
 								</Button>
+							</ListItem>
+						</List>
+						<Text>Used this toilet before? Leave a review!</Text>
+						<Text>Comments: </Text>
+						<TextInput	//text input box for comment on location
+							style={{height: 80, borderColor: 'gray', borderWidth: 1}}
+							onChangeText={(text) => this.setState({comment: text})}
+						/>
+						<View style={{flexDirection: "row"}}>
+							<Button disabled={this.state.upchecked} success style={{marginRight: 10}} onPress={()=>this.upvotePress()}><Text> Upvote </Text></Button>
+							<Button disabled={this.state.downvoted} danger onPress={()=>this.downvotePress()}><Text> Downvote </Text></Button>
+						</View>
+						<Button style={{padding: 20}} onPress = {async () => {
+		            addReviewToDynamo(this.state);
+							}}>
+						<Text>Submit</Text>
+						</Button>
 					</Content>
 				</Container>
 			);
