@@ -169,8 +169,6 @@ class HomeScreen extends React.Component {
     })
     //Add the points we need to draw the polyline to state
     this.setState({coords: coords});
-    //This alerts the distance from current location to destination and ETA by walking
-    alert("Distance: " + respJson.routes[0].legs[0].distance.text + "\n" + "ETA: " + respJson.routes[0].legs[0].duration.text);
     }
     catch(error) {
       alert(error)
@@ -202,7 +200,6 @@ class HomeScreen extends React.Component {
             console.log("Error", err);
           } else {
             // set the list of markers in the state and update map to user lat and long
-            //console.log(data)
             this.setState({
               markers: data.Items,
               region:userState,
@@ -211,8 +208,7 @@ class HomeScreen extends React.Component {
           }
         });
         //Creates the line for navigation. It is here for now because the "navigate" button on a toilet screen is yet to be made. Guides to a Bobst location for now
-        let destination = "40.7295, -73.9972";
-        this.getDirections(`${userState.latitude}, ${userState.longitude}`, destination)
+        this.getDirections(`${userState.latitude}, ${userState.longitude}`, `${userState.latitude}, ${userState.longitude}`);
       },
       errorAlert,
       {
@@ -266,7 +262,6 @@ class HomeScreen extends React.Component {
 
   render() {
     let text = "Loading";
-
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
@@ -282,7 +277,6 @@ class HomeScreen extends React.Component {
           this.state.region.latitudeDelta = 0.015,
           this.state.region.longitudeDelta = 0.015
       }
-
       return (
         <Drawer
           ref={(ref) => {this._drawer = ref}}
