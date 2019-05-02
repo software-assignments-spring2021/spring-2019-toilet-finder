@@ -271,11 +271,15 @@ class HomeScreen extends React.Component {
     if (this.state.isLoading == false){
       //This indicates that the user is asking for a location to be navigated to
       if (this.props.navigation.state.params !== undefined){
-        this.state.coords = this.props.navigation.state.params.coords;
-          this.state.region.latitude = this.props.navigation.state.params.searchLat,
-          this.state.region.longitude = this.props.navigation.state.params.searchLong,
-          this.state.region.latitudeDelta = 0.015,
-          this.state.region.longitudeDelta = 0.015
+      	if (this.props.navigation.state.params.coords !== undefined){
+        	this.state.coords = this.props.navigation.state.params.coords;
+        }
+        if (this.props.navigation.state.params.searchLat !== undefined){
+        	this.state.region.latitude = this.props.navigation.state.params.searchLat;
+		      this.state.region.longitude = this.props.navigation.state.params.searchLong;
+		      this.state.region.latitudeDelta = 0.015;
+		      this.state.region.longitudeDelta = 0.015;
+        }
       }
       return (
         <Drawer
