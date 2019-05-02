@@ -179,7 +179,7 @@ export default class MarkerInfo extends React.Component {
 						  }}
 						/>
 								<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-								<Text>Disabled: {this.checkIcons(this.state.disabled)}</Text>
+								<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
 								<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
 								<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
 								<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {

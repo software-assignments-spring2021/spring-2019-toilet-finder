@@ -242,7 +242,7 @@ export default class AddLocationScreen extends Component {
 							checked={this.state.disabled}
 							onPress={()=> this.setState({ disabled: !this.state.disabled })}/>
 						<Body>
-							<Text>Disabled</Text>
+							<Text>Handicap Accessible</Text>
 						</Body>
 					</ListItem>
 
