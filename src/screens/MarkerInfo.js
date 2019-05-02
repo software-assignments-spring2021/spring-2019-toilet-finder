@@ -125,7 +125,6 @@ export default class MarkerInfo extends React.Component {
 				console.log(err);
 				return [];  // return empty array if no data so nothing breaks...
 			} else {
-				console.log("DESCCRIPTION", data);
 				this.setState({
 					description: data.Items[0].desc
 				})
