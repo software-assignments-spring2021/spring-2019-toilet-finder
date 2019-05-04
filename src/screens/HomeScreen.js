@@ -91,51 +91,13 @@ class HomeScreen extends React.Component {
       continue: true,
       //Locations of bathrooms to be stored
       markers: [],
+      //Current dummy Location
+      currLat: 0,
+      currLong: 0
     };
   }
 
-
-  //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
-  iterator(){
-    //Create an object
-    let iterate = function(list){
-      let i = 0;
-      let items = list;
-      this.i = 0;
-      this.items = list;
-    }
-
-    iterate.prototype = {
-      //Get current value
-      getVal: function(){
-        return this.items[this.i];
-      },
-      //Look at what the next closest toilet location is
-      next: function(){
-        this.i++;
-        return this.items[this.i];
-      },
-      //Look at the previously closest toilet location
-      prev: function(){
-        this.i--;
-        return this.items[this.i];
-      }
-    }
-    //This function will be implemented once get the "find nearest locations" system to work
-    /*
-    function get(){
-      let collection = [];
-      let items = [1,2,3,4,5];
-      let iter = new iterate(items);
-      while (iter.items[iter.i] !== undefined){
-        //Put it in a designated list that would be presented to the user... yet to be written
-        collection.append(iter.items[i])
-        iter.next();
-      }
-    }
-    get();
-    */
-  }
+  
 
   handleMarkerPress(event) {
     const markerID = event.nativeEvent.id;
@@ -259,6 +221,10 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Search')
   }
 
+  reset = () => {
+  	this.state.coords = {};
+  }
+
 
   render() {
     let text = "Loading";
@@ -271,15 +237,21 @@ class HomeScreen extends React.Component {
     if (this.state.isLoading == false){
       //This indicates that the user is asking for a location to be navigated to
       if (this.props.navigation.state.params !== undefined){
+      	this.state.region.latitude = this.state.currLat;
+      	this.state.region.longitude = this.state.currLong;
       	if (this.props.navigation.state.params.coords !== undefined){
         	this.state.coords = this.props.navigation.state.params.coords;
         }
         if (this.props.navigation.state.params.searchLat !== undefined){
         	this.state.region.latitude = this.props.navigation.state.params.searchLat;
 		      this.state.region.longitude = this.props.navigation.state.params.searchLong;
-		      this.state.region.latitudeDelta = 0.015;
-		      this.state.region.longitudeDelta = 0.015;
+		      delete this.props.navigation.state.params.searchLat;
+		      delete this.props.navigation.state.params.searchLong;
         }
+      }
+      else{
+      	this.state.currLat = this.state.region.latitude;
+      	this.state.currLong = this.state.region.longitude;
       }
       return (
         <Drawer
@@ -349,8 +321,8 @@ class HomeScreen extends React.Component {
                   onPress={ () => this.props.navigation.navigate('Info', {
                     longLat: marker.longLat,
                     name: marker.name,
-                    userLat: this.state.region.latitude,
-                    userLong: this.state.region.longitude
+                    userLat: this.state.currLat,
+                    userLong: this.state.currLong
                   })}
                 >
                   <MapCallout
@@ -365,6 +337,11 @@ class HomeScreen extends React.Component {
               strokeWidth={2}
               strokeColor="red"/>
           </MapView>
+          <Button block style={{backgroundColor: '#EFE1B0'}} onPress = {() =>
+          	this.state.coords = {}
+          }>
+            <Text style={{color:'black'}}>Reset</Text>
+          </Button>
           <Button block style={{backgroundColor: '#EFE1B0'}}>
             <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
           </Button>
