@@ -33,6 +33,12 @@ function tagBuilder() {
 		disabled: false,
 		paytouse: false,
 		unisex: false,
+		upvote: 0,
+		downvote: 0,
+		upPressed: false,
+		downPressed: false,
+		liked: false,
+		rating: '',
 		decription: ''
 	}
 }
@@ -50,6 +56,58 @@ export default class MarkerInfo extends React.Component {
 			backgroundColor: '#EFE1B0'
 		}
 	};
+
+	updateUpvotes = () => {
+		if (!this.state.upPressed) {
+			if (!this.state.downPressed) {
+				this.setState((prevState, props) => {
+					return {
+						upvote: prevState.upvote + 1,
+						rating: (prevState.upvote + 1)/(prevState.upvote + prevState.downvote + 1),
+						upPressed: true
+					};
+				});
+			} else {
+				this.setState((prevState, props) => {
+					return {
+						upvote: prevState.upvote + 1,
+						downvote: prevState.downvote - 1,
+						upPressed: true,
+						downPressed: false,
+						rating: (prevState.upvote + 1)/(prevState.upvote + prevState.downvote)
+					};
+				})
+			}
+		} else {
+			return;
+		}
+	}
+
+	updateDownvotes = () => {
+		if (!this.state.downPressed) {
+			if (!this.state.upPressed) {
+				this.setState((prevState, props) => {
+					return {
+						downvote: prevState.downvote + 1,
+						rating: (prevState.upvote)/(prevState.upvote + prevState.downvote + 1),
+						downPressed: true
+					};
+				});
+			} else {
+				this.setState((prevState, props) => {
+					return {
+						upvote: prevState.upvote -1,
+						downvote: prevState.downvote + 1,
+						downPressed: true,
+						upPressed: false,
+						rating: (prevState.upvote - 1)/(prevState.upvote + prevState.downvote)
+					}
+				});
+			}
+		} else {
+			return;
+		}
+	}
 
 
 	//Function to use for navigation
@@ -129,6 +187,32 @@ export default class MarkerInfo extends React.Component {
 				})
 			}
 		});
+
+		// query parameters
+		var ratingParams = {
+			TableName: "toilets",
+			ExpressionAttributeValues: {                  // set string for use in expressions
+				":latLong": this.params.longLat,
+				":spec": "rating"
+			},
+			KeyConditionExpression: "longLat = :latLong",  // partition key comparison
+			FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
+			ProjectionExpression: "upvote, downvote"
+		};
+
+		ddb.query(ratingParams, (err, data) => {
+			if (err) {
+				console.log(err);
+			} else {
+				if (data.Count == 0) {
+					this.setState({
+						rating: 'No Rating'
+					});
+				}
+				console.log(data);
+			}
+		});
+
 		let longLat = this.params.longLat.split("+");
 		let long = longLat[0];
 		let lat = longLat[1];
@@ -154,7 +238,7 @@ export default class MarkerInfo extends React.Component {
 					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
 					<Content>
 						<Text>Description: {this.state.description}</Text>
-						<Text style={{fontSize: 20, marginLeft: 60, marginTop: 25}}>Rating %</Text>
+						<Text style={{fontSize: 20, marginLeft: 60, marginTop: 25}}>{this.state.rating}</Text>
 						<View
 						  style={{
 						    borderBottomColor: 'black',
@@ -164,8 +248,10 @@ export default class MarkerInfo extends React.Component {
 						  }}
 						/>
 						<View style={{flexDirection: "row"}}>
-							<Button small success style={{marginRight: 10}}><Text> Upvote </Text></Button>
-							<Button small danger><Text> Downvote </Text></Button>
+							<Button small success style={{marginRight: 10}} 
+								onPress={this.updateUpvotes}><Text> Upvote </Text></Button>
+							<Button small danger
+								onPress={this.updateDownvotes}><Text> Downvote </Text></Button>
 						</View>
 						<View
 						  style={{
