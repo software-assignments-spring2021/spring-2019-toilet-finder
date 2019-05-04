@@ -91,9 +91,11 @@ class HomeScreen extends React.Component {
       continue: true,
       //Locations of bathrooms to be stored
       markers: [],
+      //Current dummy Location
+      currLat: 0,
+      currLong: 0
     };
   }
-
 
   //An iterator that goes through the list of closest bathrooms. We run through them to make sure some of them have the tags user wants included
   iterator(){
@@ -259,7 +261,6 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Search')
   }
 
-
   render() {
     let text = "Loading";
     if (this.state.errorMessage) {
@@ -271,15 +272,21 @@ class HomeScreen extends React.Component {
     if (this.state.isLoading == false){
       //This indicates that the user is asking for a location to be navigated to
       if (this.props.navigation.state.params !== undefined){
+      	this.state.region.latitude = this.state.currLat;
+      	this.state.region.longitude = this.state.currLong;
       	if (this.props.navigation.state.params.coords !== undefined){
         	this.state.coords = this.props.navigation.state.params.coords;
         }
         if (this.props.navigation.state.params.searchLat !== undefined){
         	this.state.region.latitude = this.props.navigation.state.params.searchLat;
 		      this.state.region.longitude = this.props.navigation.state.params.searchLong;
-		      this.state.region.latitudeDelta = 0.015;
-		      this.state.region.longitudeDelta = 0.015;
+		      delete this.props.navigation.state.params.searchLat;
+		      delete this.props.navigation.state.params.searchLong;
         }
+      }
+      else{
+      	this.state.currLat = this.state.region.latitude;
+      	this.state.currLong = this.state.region.longitude;
       }
       return (
         <Drawer
@@ -349,8 +356,8 @@ class HomeScreen extends React.Component {
                   onPress={ () => this.props.navigation.navigate('Info', {
                     longLat: marker.longLat,
                     name: marker.name,
-                    userLat: this.state.region.latitude,
-                    userLong: this.state.region.longitude
+                    userLat: this.state.currLat,
+                    userLong: this.state.currLong
                   })}
                 >
                   <MapCallout

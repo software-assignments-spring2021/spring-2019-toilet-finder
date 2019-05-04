@@ -106,7 +106,6 @@ export default class MarkerInfo extends React.Component {
 				});
 			}
 		});
-
 		var paramDesc = {
 	    TableName: "toilets",
 	    ExpressionAttributeNames: {
