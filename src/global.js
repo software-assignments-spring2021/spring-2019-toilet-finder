@@ -17,6 +17,9 @@ AWS.config.credentials = global.creds;
 // database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
+//Global variables to display or remove buttons in MarkerInfo.js
+global.navigated = 0;
+global.bit = 0;
 
 // For all of the following get functions, pass in the longLat string
 
