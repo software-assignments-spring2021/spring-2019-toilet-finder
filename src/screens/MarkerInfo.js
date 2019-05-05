@@ -10,6 +10,11 @@ import {
 	Icon,
 	ListItem
 } from 'native-base';
+import {
+  getLocationData,
+  getRatingData,
+  getDescription
+} from '../global.js'
 import Polyline from '@mapbox/polyline';
 import getDirections from 'react-native-google-maps-directions';
 
@@ -223,6 +228,25 @@ export default class MarkerInfo extends React.Component {
 		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
+	//On clicking navigate, change screens and show a polyline to guide user
+	onNav = () => {
+		this.props.navigation.navigate('Home', {
+			coords: this.state.coords
+		})
+		//Set global variable to longLat of destination
+		global.navigated = this.props.navigation.state.params.longLat;
+		global.bit = 1;
+	}
+
+	//If user wants to quit the navigation
+	onQuit = () => {
+		this.props.navigation.navigate('Home', {
+			coords: []
+		})
+		//Set global variable back to 0
+		global.navigated = 0;
+	}
+
 	checkIcons(state) {
 		if (state == false) {
 			return <Icon type="FontAwesome" name='remove' />
@@ -233,6 +257,17 @@ export default class MarkerInfo extends React.Component {
 
 	render(){
 		if (this.state.isLoading == false) {
+			//Show the quit navigation button only when we are opening the marker for the location polyline is navigating to
+			if (this.props.navigation.state.params.longLat === global.navigated){
+				styles.quitButton = styles.permaNav;
+				styles.navButton = styles.permaQuit;
+			}
+			else{
+				styles.quitButton = styles.permaQuit;
+				if (global.bit !== 0){
+					styles.navButton = styles.permaNav;
+				}
+			}
 			return(
 				<Container style={{alignItems: 'center', backgroundColor: '#fff5ef'}}>
 					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
@@ -266,10 +301,11 @@ export default class MarkerInfo extends React.Component {
 							<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
 							<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
 							<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
-							<Button block light style={{alignContent: 'center', marginTop: 15}}onPress={() => this.props.navigation.navigate('Home', {
-								coords: this.state.coords
-							})}>
+							<Button block light style={styles.navButton}onPress={this.onNav}>
 								<Text>Navigate</Text>
+							</Button>
+							<Button block light style={styles.quitButton}onPress={this.onQuit}>
+								<Text>Quit Navigation</Text>
 							</Button>
 							<Text>Distance: {this.state.distance}</Text>
 							<Text>ETA: {this.state.eta}</Text>
@@ -293,5 +329,23 @@ const styles = StyleSheet.create({
 	load: {
 		height: 200,
 		width: 200,
+	},
+	navButton: {
+		alignContent: 'center', 
+		marginTop: 15,
+	},
+	quitButton: {
+		alignContent: 'center', 
+		marginTop: 15,
+		display: 'none'
+	},
+	permaNav: {
+		alignContent: 'center', 
+		marginTop: 15,
+	},
+	permaQuit: {
+		alignContent: 'center', 
+		marginTop: 15,
+		display: 'none'
 	}
 });
