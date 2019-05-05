@@ -53,7 +53,9 @@ export default class MapCallout extends React.Component {
 				if (data.Count == 0) {
 					return;
 				} else {
-					this.setState({rating: data.Items[0].upvote})
+					this.setState({
+						rating: (data.Items[0].upvote/(data.Items[0].upvote + data.Items[0].downvote))*100
+					})
 				}
 			}
 		});
@@ -79,7 +81,6 @@ export default class MapCallout extends React.Component {
 		return (
 			<View>
 				<Text>Bathroom Name: {this.props.name}</Text>
-				<Text>Rating: {this.state.rating.toString()}</Text>
 				<Text>Tags: {this.state.tags.toString()}</Text>
 			</View>
 		)

@@ -1,5 +1,15 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, AsyncStorage, Image } from 'react-native';
+import { 
+	StyleSheet, 
+	View, 
+	TouchableOpacity, 
+	SafeAreaView, 
+	ScrollView, 
+	Dimensions, 
+	AsyncStorage, 
+	Image,
+	Alert
+} from 'react-native';
 import {
 	Container,
 	Header,
@@ -42,10 +52,27 @@ function tagBuilder() {
 		downvote: 0,
 		upPressed: false,
 		downPressed: false,
-		liked: false,
+		timestamp: '',
 		rating: '',
 		decription: ''
 	}
+}
+
+function randomizer(){
+	let val = Math.floor(Math.random() * Math.floor(10));
+	val = val.toString();
+	return val;
+}
+
+function addKey(str){
+	//Should randomize more after discussing with the team
+	let add = "-";
+	add = add.concat(randomizer());
+	add = add.concat(randomizer());
+	add = add.concat(randomizer());
+	add = add.concat(randomizer());
+	let key = str.concat(add);
+	return key;
 }
 
 export default class MarkerInfo extends React.Component {
@@ -62,39 +89,41 @@ export default class MarkerInfo extends React.Component {
 		}
 	};
 
+	// function handles upvote button presses 
 	updateUpvotes = () => {
-		if (!this.state.upPressed) {
-			if (!this.state.downPressed) {
+		if (!this.state.upPressed) {							// if the upvote button hasn't been pressed yet
+			if (!this.state.downPressed) {					// if the downvote button hasn't been pressed yet
 				this.setState((prevState, props) => {
 					return {
 						upvote: prevState.upvote + 1,
-						rating: (prevState.upvote + 1)/(prevState.upvote + prevState.downvote + 1),
+						rating: (((prevState.upvote + 1)/(prevState.upvote + prevState.downvote + 1))*100).toFixed(2),
 						upPressed: true
 					};
 				});
-			} else {
-				this.setState((prevState, props) => {
+			} else {																// if the downvote button was pressed before
+				this.setState((prevState, props) => {	
 					return {
 						upvote: prevState.upvote + 1,
 						downvote: prevState.downvote - 1,
 						upPressed: true,
 						downPressed: false,
-						rating: (prevState.upvote + 1)/(prevState.upvote + prevState.downvote)
+						rating: (((prevState.upvote + 1)/(prevState.upvote + prevState.downvote))*100).toFixed(2)
 					};
 				})
 			}
-		} else {
+		} else {	// if the upvote button is already pressed do nothing
 			return;
 		}
 	}
 
+	// logic similar to upvote handler
 	updateDownvotes = () => {
 		if (!this.state.downPressed) {
 			if (!this.state.upPressed) {
 				this.setState((prevState, props) => {
 					return {
 						downvote: prevState.downvote + 1,
-						rating: (prevState.upvote)/(prevState.upvote + prevState.downvote + 1),
+						rating: (((prevState.upvote)/(prevState.upvote + prevState.downvote + 1))*100).toFixed(2),
 						downPressed: true
 					};
 				});
@@ -105,12 +134,60 @@ export default class MarkerInfo extends React.Component {
 						downvote: prevState.downvote + 1,
 						downPressed: true,
 						upPressed: false,
-						rating: (prevState.upvote - 1)/(prevState.upvote + prevState.downvote)
+						rating: (((prevState.upvote - 1)/(prevState.upvote + prevState.downvote))*100).toFixed(2)
 					}
 				});
 			}
 		} else {
 			return;
+		}
+	}
+
+	// rate button handler
+	rateButtonPress = () => {
+		if ((this.state.upvote + this.state.downvote) > 1) {				// if there was already ratings data before
+			var params = {
+				TableName: 'toilets',
+				Key: {
+					'longLat': this.params.longLat,
+					'timestamp': this.state.timestamp
+				},
+				UpdateExpression: 'set upvote = :up, downvote = :down',
+				ExpressionAttributeValues: {
+					':up': this.state.upvote,
+					':down': this.state.downvote
+				}
+			}
+
+			ddb.update(params, (err, data) => {			// update the database
+				if (err) {
+					console.log(err)
+					Alert.alert('Rating was not successful.')
+				} else {
+					Alert.alert('Thank you for rating!')
+				}
+			})
+		} else {														// if there was no ratings data before
+			var now = Date.now().toString()
+			var params = {
+				TableName: 'toilets',
+				Item: {
+					'longLat': this.params.longLat,
+					'timestamp': addKey(now),
+					'spec_type': 'rating',
+					'upvote': this.state.upvote,
+					'downvote': this.state.downvote
+				}
+			}
+
+			ddb.put(params, (err, data) => {	// enter a new ratings entry
+				if (err) {
+					console.log(err)
+					Alert.alert('Rating was not successfull.')
+				} else {
+					Alert.alert('Thank you for rating!')
+				}
+			})
 		}
 	}
 
@@ -200,21 +277,31 @@ export default class MarkerInfo extends React.Component {
 				":latLong": this.params.longLat,
 				":spec": "rating"
 			},
+			ExpressionAttributeNames: {
+				"#time": "timestamp"
+			},
 			KeyConditionExpression: "longLat = :latLong",  // partition key comparison
 			FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
-			ProjectionExpression: "upvote, downvote"
+			ProjectionExpression: "#time, upvote, downvote"
 		};
 
+		// query for the ratings data
 		ddb.query(ratingParams, (err, data) => {
 			if (err) {
 				console.log(err);
 			} else {
-				if (data.Count == 0) {
+				if (data.Count == 0) {		// count of 0 means no data
 					this.setState({
 						rating: 'No Rating'
 					});
-				}
-				console.log(data);
+				} else {
+					this.setState({					// set states with old data
+						upvote: data.Items[0].upvote,
+						downvote: data.Items[0].downvote,
+						timestamp: data.Items[0].timestamp,
+						rating: ((data.Items[0].upvote/(data.Items[0].upvote + data.Items[0].downvote))*100).toFixed(2)
+					})
+				};
 			}
 		});
 
@@ -298,7 +385,7 @@ export default class MarkerInfo extends React.Component {
 					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
 					<Content>
 						<Text>Description: {this.state.description}</Text>
-						<Text style={{fontSize: 20, marginLeft: 60, marginTop: 25}}>{this.state.rating}</Text>
+						<Text style={{fontSize: 20, alignSelf: 'center', marginTop: 25}}>{this.state.rating} %</Text>
 						<View
 						  style={{
 						    borderBottomColor: 'black',
@@ -312,6 +399,12 @@ export default class MarkerInfo extends React.Component {
 								onPress={this.updateUpvotes}><Text> Upvote </Text></Button>
 							<Button small danger
 								onPress={this.updateDownvotes}><Text> Downvote </Text></Button>
+						</View>
+						<View style={{alignItems: 'center'}}>
+							<Button style={styles.rateButton}
+								onPress={this.rateButtonPress}>
+								<Text> Rate! </Text>
+							</Button>
 						</View>
 						<View
 						  style={{
@@ -372,5 +465,9 @@ const styles = StyleSheet.create({
 		alignContent: 'center', 
 		marginTop: 15,
 		display: 'none'
+	},
+	rateButton: {
+		alignSelf: 'center',
+		marginTop: 15,
 	}
 });
