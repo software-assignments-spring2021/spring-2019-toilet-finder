@@ -272,18 +272,28 @@ class HomeScreen extends React.Component {
     if (this.state.isLoading == false){
       //This indicates that the user is asking for a location to be navigated to
       if (this.props.navigation.state.params !== undefined){
+        //Reset the value of latitude and longitude to actual user's location first
       	this.state.region.latitude = this.state.currLat;
       	this.state.region.longitude = this.state.currLong;
+        //User has clicked navigation so adjust screen to show starting point and destination
       	if (this.props.navigation.state.params.coords !== undefined){
         	this.state.coords = this.props.navigation.state.params.coords;
+          this.state.region.latitudeDelta = this.props.navigation.state.params.newLat;
+          this.state.region.longitudeDelta = this.props.navigation.state.params.newLong;
+          this.state.region.latitude = this.props.navigation.state.params.midLat;
+          this.state.region.longitude = this.props.navigation.state.params.midLong;
         }
+        //User has searched a location
         if (this.props.navigation.state.params.searchLat !== undefined){
         	this.state.region.latitude = this.props.navigation.state.params.searchLat;
 		      this.state.region.longitude = this.props.navigation.state.params.searchLong;
+          this.state.region.latitudeDelta = 0.015;
+          this.state.region.longitudeDelta = 0.015;
 		      delete this.props.navigation.state.params.searchLat;
 		      delete this.props.navigation.state.params.searchLong;
         }
       }
+      //User has not asked to change latitude or longitude data. Only enters on render at first
       else{
       	this.state.currLat = this.state.region.latitude;
       	this.state.currLong = this.state.region.longitude;

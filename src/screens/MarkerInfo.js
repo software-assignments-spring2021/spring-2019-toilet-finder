@@ -230,8 +230,28 @@ export default class MarkerInfo extends React.Component {
 
 	//On clicking navigate, change screens and show a polyline to guide user
 	onNav = () => {
+		//Calculate and change the latitude and longitude delta
+		let longLat = this.params.longLat.split("+");
+		let long = parseFloat(longLat[0]);
+		let lat = parseFloat(longLat[1]);
+		let longDelta = Math.abs(Math.abs(long) - Math.abs(this.props.navigation.state.params.userLong));
+		let latDelta = Math.abs(Math.abs(lat) - Math.abs(this.props.navigation.state.params.userLat));
+		//Claculate the mid-point of the 2 locations
+		let middleLong = Math.abs(Math.abs(long) + Math.abs(this.props.navigation.state.params.userLong)) / 2;
+		let middleLat = Math.abs(Math.abs(lat) + Math.abs(this.props.navigation.state.params.userLat)) / 2;
+		//In case latitude and longitude were negative, multiple the calculated aboslute value by -1
+		if (long < 0){
+			middleLong = middleLong * -1;
+		}
+		if (lat < 0){
+			middleLat = middleLat * -1;
+		}
 		this.props.navigation.navigate('Home', {
-			coords: this.state.coords
+			coords: this.state.coords,
+			newLat: latDelta + latDelta/10,
+			newLong: longDelta + longDelta/10,
+			midLat: middleLat,
+			midLong: middleLong
 		})
 		//Set global variable to longLat of destination
 		global.navigated = this.props.navigation.state.params.longLat;
@@ -240,8 +260,13 @@ export default class MarkerInfo extends React.Component {
 
 	//If user wants to quit the navigation
 	onQuit = () => {
+		//Reset the latLong data and delta data to user's actual location
 		this.props.navigation.navigate('Home', {
-			coords: []
+			coords: [],
+			newLat: 0.015,
+			newLong: 0.015,
+			midLat: this.props.navigation.state.params.userLat,
+			midLong: this.props.navigation.state.params.userLong
 		})
 		//Set global variable back to 0
 		global.navigated = 0;
