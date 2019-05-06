@@ -394,7 +394,7 @@ export default class MarkerInfo extends React.Component {
 								flex: 2
 						  }}
 						/>
-						<View style={{flexDirection: "row"}}>
+						<View style={{flexDirection: "row", alignSelf: 'center'}}>
 							<Button small success style={{marginRight: 10}}
 								onPress={this.updateUpvotes}><Text> Upvote </Text></Button>
 							<Button small danger
@@ -410,23 +410,23 @@ export default class MarkerInfo extends React.Component {
 						  style={{
 						    borderBottomColor: 'black',
 						    borderBottomWidth: 1,
-								marginTop: 15,
-								marginBottom: 15,
-								flex: 2
+							marginTop: 15,
+							marginBottom: 15,
+							flex: 2,
 						  }}
 						/>
-							<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-							<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
-							<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
-							<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
+							<Text style={{alignSelf: 'center'}}>Baby: {this.checkIcons(this.state.baby)}</Text>
+							<Text style={{alignSelf: 'center'}}>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
+							<Text style={{alignSelf: 'center'}}>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
+							<Text style={{alignSelf: 'center'}}>Unisex: {this.checkIcons(this.state.unisex)}</Text>
 							<Button block light style={styles.navButton}onPress={this.onNav}>
 								<Text>Navigate</Text>
 							</Button>
 							<Button block light style={styles.quitButton}onPress={this.onQuit}>
 								<Text>Quit Navigation</Text>
 							</Button>
-							<Text>Distance: {this.state.distance}</Text>
-							<Text>ETA: {this.state.eta}</Text>
+							<Text style={{alignSelf: 'center'}}>Distance: {this.state.distance}</Text>
+							<Text style={{alignSelf: 'center'}}>ETA: {this.state.eta}</Text>
 					</Content>
 				</Container>
 			);
@@ -449,22 +449,26 @@ const styles = StyleSheet.create({
 		width: 200,
 	},
 	navButton: {
-		alignContent: 'center',
+		alignSelf: 'center',
 		marginTop: 15,
+		width: '50%',
 	},
 	quitButton: {
-		alignContent: 'center',
+		alignSelf: 'center',
 		marginTop: 15,
-		display: 'none'
+		display: 'none',
+		width: '50%',
 	},
 	permaNav: {
-		alignContent: 'center',
+		alignSelf: 'center',
 		marginTop: 15,
+		width: '50%',
 	},
 	permaQuit: {
-		alignContent: 'center',
+		alignSelf: 'center',
 		marginTop: 15,
-		display: 'none'
+		display: 'none',
+		width: '50%',
 	},
 	rateButton: {
 		alignSelf: 'center',

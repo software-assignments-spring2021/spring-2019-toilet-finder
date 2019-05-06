@@ -369,7 +369,6 @@ class HomeScreen extends React.Component {
               <MapView.Marker
                 key={marker.longLat}
                 coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
-                onCalloutPress={() => console.log('onCalloutPress')}
               >
                 <MapView.Callout
                   title={marker.name}

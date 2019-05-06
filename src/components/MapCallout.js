@@ -94,11 +94,12 @@ export default class MapCallout extends React.Component {
 	render() {
 		return (
 			<View>
-			<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-			<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
-			<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
-			<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
-				<Text style={{textDecorationLine: 'underline', marginTop: 5}}>Press to see more info...</Text>
+				<Text style={{fontWeight: 'bold'}}>Bathroom Name: {this.props.name}</Text>
+				<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
+				<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
+				<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
+				<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
+					<Text style={{textDecorationLine: 'underline', marginTop: 5}}>Press to see more info...</Text>
 			</View>
 		)
 	}
