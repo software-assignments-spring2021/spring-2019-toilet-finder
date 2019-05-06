@@ -100,6 +100,16 @@ function addLocationToDynamo(state) {
 						"paytouse": state.payToUse
 					}
 				}
+			},
+			{
+				PutRequest: {   // put location comment
+					Item: {
+						"longLat": longLat,
+						"timestamp": addKey(now),
+						"spec_type": "comment",
+						"comment": state.comment
+					}
+				}
 			}
 			]
 		}
@@ -151,6 +161,7 @@ export default class AddLocationScreen extends Component {
 		this.state = {
 			name: '',
 			desc: '',
+			comment: '',
 			long_lat: '',
 			location: null,
 			errorMessage: null,
@@ -213,6 +224,10 @@ export default class AddLocationScreen extends Component {
 						<Item>
 							<Input placeholder="Description about bathroom"
 								onChangeText={(text) => this.setState({desc: text})} />
+						</Item>
+						<Item>
+							<Input placeholder="Comments"
+								onChangeText={(text) => this.setState({comment: text})} />
 						</Item>
 					</Form>
 
