@@ -32,62 +32,64 @@ var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 //For adding comment and rate to dynamodb
 function addReviewToDynamo(state) {
-// // unpacking variables to be stored in the DB
-// var now = Date.now().toString();
-//
-// 	var params = {
-// 		RequestItems: {
-// 			"toilets": [
-//         {
-//           PutRequest: {   // put user comments
-//             Item: {
-//               "longLat": this.params.longLat,
-//               "timestamp": addKey(now),
-//               "spec_type": "comment",
-//             	"comment": state.comment
-//             }
-//           }
-//         },
-//         {
-//           PutRequest: {   // put ratings info
-//             Item: {
-// 							"longLat": this.params.longLat,
-// 							"timestamp": addKey(now),
-// 							"spec_type": "rating",
-//               "upvote": state.upvote,
-// 			        "downvote": state.downvote
-//             }
-//           }
-// 				}
-// 			]
-// 		}
-//   };
-//
-// 	// sending data to the database
-// 	ddb.batchWrite(params, function(err, data) {
-// 	  if (err) {
-//       console.log("Error", err);
-// 	  } else {
-// 	    console.log("Data has been entered into ", data.TableNames);
-// 	  }
-// 	});
-// }
-//
-// //Randomizer function to call when generating primary key
-// function randomizer(){
-// 	let val = Math.floor(Math.random() * Math.floor(10));
-// 	val = val.toString();
-// 	return val;
-// }
-//
-// function addKey(str){
-// 	let add = "-";
-//   add = add.concat(randomizer());
-//   add = add.concat(randomizer());
-//   add = add.concat(randomizer());
-//   add = add.concat(randomizer());
-// 	let key = str.concat(add);
-// 	return key;
+// unpacking variables to be stored in the DB
+var now = Date.now().toString();
+
+	var params = {
+		RequestItems: {
+			"toilets": [
+        {
+          PutRequest: {   // put user comments
+            Item: {
+              "longLat": state.longLat,
+              "timestamp": addKey(now),
+              "spec_type": "comment",
+            	"comment": state.comment
+            }
+          }
+        },
+        {
+          PutRequest: {   // put ratings info
+            Item: {
+							"longLat": state.longLat,
+							"timestamp": addKey(now),
+							"spec_type": "rating",
+              "upvote": state.upvote,
+			        "downvote": state.downvote
+            }
+          }
+				}
+			]
+		}
+  };
+
+	// sending data to the database
+	ddb.batchWrite(params, function(err, data) {
+	  if (err) {
+      console.log("Error", err);
+	  } else {
+	    console.log("Data has been entered into ", data.TableNames);
+			Alert.alert("Success! Comment has been added to location.");
+			setTimeout(function() { Updates.reloadFromCache(); }, 1000);
+	  }
+	});
+}
+
+//Randomizer function to call when generating primary key
+function randomizer(){
+	let val = Math.floor(Math.random() * Math.floor(10));
+	val = val.toString();
+	return val;
+}
+
+function addKey(str){
+	let add = "-";
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+	let key = str.concat(add);
+	return key;
 }
 
 // Builder design pattern
@@ -106,7 +108,9 @@ function tagBuilder() {
 		rating: '',
 		description: '',
 		comments: [],
-		comment: ''
+		comment: '',
+		longLat: '',
+		timestamp: ''
 	}
 }
 
@@ -115,6 +119,7 @@ export default class MarkerInfo extends React.Component {
 		super(props);
 		this.params = this.props.navigation.state.params;
 		this.state = tagBuilder();
+		this.state.longLat = this.params.longLat;
 	}
 
 	static navigationOptions = {
@@ -362,6 +367,35 @@ updateDownvotes = () => {
 		global.navigated = 0;
 	}
 
+	getStyleBaby() {
+		if (this.state.baby) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+	getStyleDisabled() {
+		if (this.state.disabled) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+	getStylePay() {
+		if (this.state.paytouse) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+	getStyleUnisex() {
+		if (this.state.unisex) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+
 	render(){
 		if (this.state.isLoading == false) {
 			//Show the quit navigation button only when we are opening the marker for the location polyline is navigating to
@@ -378,29 +412,33 @@ updateDownvotes = () => {
 			return(
 				<Container style={{align: 'center', backgroundColor: '#fff5ef'}}>
 					<Content>
-						<View style={{flexDirection: "row", marginLeft: 20}}>
-							<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>{this.params.name}</Text>
-							<View style={{flexDirection: 'column', justifyContent: 'flex-end'}}>
+						<View style={{flex: 1, flexDirection: "row", marginLeft: 20, marginRight: 20}}>
+							<Text style={{flex: 2, fontWeight: 'bold', fontSize: 30, paddingTop: 15}}>{this.params.name}</Text>
+							<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end', width: '25%'}}>
 								<Button block light style={styles.navButton} onPress={this.onNav}>
-									<Text>Navigate</Text>
+									<Text style={{textAlign: 'center'}}>Navigate</Text>
 								</Button>
 								<Button block light style={styles.quitButton}onPress={this.onQuit}>
 									<Text>Quit Navigation</Text>
 								</Button>
 							</View>
 						</View>
-						<Text style={{flex: 1, flexWrap: 'wrap', marginLeft: 20}}>{this.state.description}</Text>
-						<View style={{flexDirection: "row", marginLeft: 20}}>
-							<Text>Distance: {this.state.distance}</Text>
-							<Text>ETA: {this.state.eta}</Text>
+						<Text style={{fontSize: 20, marginLeft: 20}}>#Up #Down - %</Text>
+						<View style={{flexDirection: "row", marginLeft: 20, marginRight: 20}}>
+							<View style={{width: '50%'}}>
+								<Text>Distance: {this.state.distance}</Text>
+							</View>
+							<View style={{width: '50%'}}>
+								<Text>ETA: {this.state.eta}</Text>
+							</View>
 						</View>
 						<ScrollView style={{marginLeft: 20, marginRight: 20}}>
-							<Text style={{fontSize: 20}}>Rating</Text>
+							<Text style={{flex: 1, flexWrap: 'wrap', paddingTop: 10}}>{this.state.description}</Text>
 							<View style={{flexDirection: "row"}}>
-								<Text style={styles.tags}>{this.state.baby.toString()}</Text>
-								<Text style={styles.tags}>handi{this.state.disabled.toString()}</Text>
-								<Text style={styles.tags}>pay{this.state.paytouse.toString()}</Text>
-								<Text style={styles.tags}>unisex{this.state.unisex.toString()}</Text>
+								<Text style={this.getStyleBaby()}> Baby </Text>
+								<Text style={this.getStyleDisabled()}> Handicap </Text>
+								<Text style={this.getStylePay()}> Pay to Use </Text>
+								<Text style={this.getStyleUnisex()}> Unisex </Text>
 							</View>
 							<View style={{
 							    borderBottomColor: 'black',
@@ -408,14 +446,14 @@ updateDownvotes = () => {
 									paddingTop: 5
 							  }}
 							/>
-							<Text>comments here</Text>
+							<Text>User comments:</Text>
 							<View style={{
 							    borderBottomColor: 'black',
 							    borderBottomWidth: 1,
 									paddingTop: 5
 							  }}
 							/>
-							<View>
+							<View style={{paddingTop: 5}}>
 								<Text>Used this toilet before? Leave a comment!</Text>
 								<Text>Comment: </Text>
 								<TextInput	//text input box for comment on location
@@ -427,7 +465,7 @@ updateDownvotes = () => {
 								<Button success onPress={this.updateUpvotes}>
 									<Text> Upvote </Text>
 								</Button>
-								<Button danger onPress={this.updateDownvotes}>
+								<Button style={{marginLeft: 3}} danger onPress={this.updateDownvotes}>
 									<Text> Downvote </Text>
 								</Button>
 							</View>
@@ -463,34 +501,42 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingTop: 70
 	},
-	tags: {
-		flex: 1,
+	tagsFalse: {
 		margin: 5,
-		backgroundColor: '#EFE1B0',
+		fontSize: 16,
+		backgroundColor: '#FFD7D7',
+		textAlign: 'center',
+		borderColor: 'black',
+		marginBottom: 14,
+		borderWidth: 1,
+		height: 35
+	},
+	tags: {
+		margin: 5,
+		backgroundColor: '#E0F6DC',
 		textAlign: 'center',
 		fontSize: 16,
-		paddingTop: 20,
-		borderColor: 'black'
+		height: 35,
+		marginBottom: 14,
+		borderColor: 'black',
+		borderWidth: 1
 	},
 	load: {
 		height: 200,
-		width: 200,
+		width: 200
 	},
 	navButton: {
 		fontSize: 14,
 		justifyContent: 'flex-end'
 	},
 	quitButton: {
-		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
 	},
 	permaNav: {
-		alignContent: 'center',
 		marginTop: 15,
 	},
 	permaQuit: {
-		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
 	}
