@@ -20,7 +20,7 @@ export default class SearchBathrooms extends React.Component {
 	}
 
 	static navigationOptions = {
-		title: 'Search Bathrooms',
+		title: 'Search Locations',
 		headerStyle: {
 			backgroundColor: '#EFE1B0'
 		}
@@ -29,7 +29,7 @@ export default class SearchBathrooms extends React.Component {
 	render(){
 		return (
 			<GooglePlacesAutocomplete
-				placeholder='Search'
+				placeholder='Search a location...'
 				minLength={2} // minimum length of text to search
 				autoFocus={false}
 				returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype

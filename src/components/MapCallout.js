@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { Icon } from 'native-base';
 
 var AWS = require('aws-sdk')
 
@@ -16,7 +17,10 @@ export default class MapCallout extends React.Component {
 		super(props);
 		this.state = {
 			rating: false,
-			tags: false
+			baby: '',
+			disabled: '',
+			unisex: '',
+			paytouse: ''
 		}
 	}
 
@@ -69,19 +73,32 @@ export default class MapCallout extends React.Component {
 				if (data.Count == 0) {
 					return;
 				} else {
-					this.setState({tags: data.Items[0].baby})
-					// console.log(this.state)
+					this.setState({baby: data.Items[0].baby})
+					this.setState({disabled: data.Items[0].baby})
+					this.setState({unisex: data.Items[0].baby})
+					this.setState({paytouse: data.Items[0].baby})
 				}
 			}
 		});
 
 	}
 
+	checkIcons(state) {
+		if (state == false) {
+			return <Icon type="Ionicons" name='close' style={{size: 10}}/>
+		} else {
+			return <Icon type="Ionicons" name='checkmark' style={{size: 10}}/>
+		}
+	}
+
 	render() {
 		return (
 			<View>
-				<Text>Bathroom Name: {this.props.name}</Text>
-				<Text>Tags: {this.state.tags.toString()}</Text>
+			<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
+			<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
+			<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
+			<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
+				<Text style={{textDecorationLine: 'underline', marginTop: 5}}>Press to see more info...</Text>
 			</View>
 		)
 	}

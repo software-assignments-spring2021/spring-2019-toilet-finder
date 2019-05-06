@@ -307,24 +307,33 @@ class HomeScreen extends React.Component {
               <List>
                 <ListItem>
                   <Body>
-                  <TouchableOpacity onPress={this.handleOnPressHome } >
-                  <Text>Toilet Map</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={this.handleOnPressHome } >
+                    <Text>Toilet Map</Text>
+                    </TouchableOpacity>
                   </Body>
+                  <Right>
+                    <Icon type="Ionicons" name='map' style={{color: '#000000'}}/>
+                  </Right>
                 </ListItem>
                 <ListItem>
                   <Body>
                   <TouchableOpacity onPress={this.handleOnPressAdd} >
-                    <Text>Add Locations</Text>
+                    <Text>Add Bathroom</Text>
                   </TouchableOpacity>
                   </Body>
+                  <Right>
+                    <Icon type="Ionicons" name='add' style={{color: '#000000'}}/>
+                  </Right>
                 </ListItem>
                 <ListItem>
                   <Body>
                   <TouchableOpacity onPress={this.handleOnPressSearch} >
-                    <Text>Search Bathrooms</Text>
+                    <Text>Search Location</Text>
                   </TouchableOpacity>
                   </Body>
+                  <Right>
+                    <Icon type="Ionicons" name='search' style={{color: '#000000'}}/>
+                  </Right>
                 </ListItem>
               </List>
             </Content>
@@ -360,6 +369,7 @@ class HomeScreen extends React.Component {
               <MapView.Marker
                 key={marker.longLat}
                 coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
+                onCalloutPress={() => console.log('onCalloutPress')}
               >
                 <MapView.Callout
                   title={marker.name}
@@ -369,6 +379,7 @@ class HomeScreen extends React.Component {
                     userLat: this.state.currLat,
                     userLong: this.state.currLong
                   })}
+
                 >
                   <MapCallout
                     name = {marker.name}

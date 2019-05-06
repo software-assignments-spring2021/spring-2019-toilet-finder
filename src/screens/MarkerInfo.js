@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-	StyleSheet, 
-	View, 
-	TouchableOpacity, 
-	SafeAreaView, 
-	ScrollView, 
-	Dimensions, 
-	AsyncStorage, 
+import {
+	StyleSheet,
+	View,
+	TouchableOpacity,
+	SafeAreaView,
+	ScrollView,
+	Dimensions,
+	AsyncStorage,
 	Image,
 	Alert
 } from 'react-native';
@@ -89,7 +89,7 @@ export default class MarkerInfo extends React.Component {
 		}
 	};
 
-	// function handles upvote button presses 
+	// function handles upvote button presses
 	updateUpvotes = () => {
 		if (!this.state.upPressed) {							// if the upvote button hasn't been pressed yet
 			if (!this.state.downPressed) {					// if the downvote button hasn't been pressed yet
@@ -101,7 +101,7 @@ export default class MarkerInfo extends React.Component {
 					};
 				});
 			} else {																// if the downvote button was pressed before
-				this.setState((prevState, props) => {	
+				this.setState((prevState, props) => {
 					return {
 						upvote: prevState.upvote + 1,
 						downvote: prevState.downvote - 1,
@@ -361,9 +361,9 @@ export default class MarkerInfo extends React.Component {
 
 	checkIcons(state) {
 		if (state == false) {
-			return <Icon type="FontAwesome" name='remove' />
+			return <Icon type="Ionicons" name='close' style={{size: 15}}/>
 		} else {
-			return <Icon type="FontAwesome" name='check' />
+			return <Icon type="Ionicons" name='checkmark' style={{size: 15}}/>
 		}
 	}
 
@@ -395,7 +395,7 @@ export default class MarkerInfo extends React.Component {
 						  }}
 						/>
 						<View style={{flexDirection: "row"}}>
-							<Button small success style={{marginRight: 10}} 
+							<Button small success style={{marginRight: 10}}
 								onPress={this.updateUpvotes}><Text> Upvote </Text></Button>
 							<Button small danger
 								onPress={this.updateDownvotes}><Text> Downvote </Text></Button>
@@ -449,20 +449,20 @@ const styles = StyleSheet.create({
 		width: 200,
 	},
 	navButton: {
-		alignContent: 'center', 
+		alignContent: 'center',
 		marginTop: 15,
 	},
 	quitButton: {
-		alignContent: 'center', 
+		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
 	},
 	permaNav: {
-		alignContent: 'center', 
+		alignContent: 'center',
 		marginTop: 15,
 	},
 	permaQuit: {
-		alignContent: 'center', 
+		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
 	},

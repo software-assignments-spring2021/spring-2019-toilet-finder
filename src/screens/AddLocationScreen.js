@@ -167,7 +167,7 @@ export default class AddLocationScreen extends Component {
 	}
 
 	static navigationOptions = {
-		title: 'Add Location',
+		title: 'Add Bathroom',
 		headerStyle: {
 			backgroundColor: '#EFE1B0'
 		}
@@ -203,15 +203,15 @@ export default class AddLocationScreen extends Component {
 	//rendering of the app screen
 	render() {
 		return (
-			<Container style={{flex:1, backgroundColor: '#fff5ef'}}>
+			<Container style={{flex:1, backgroundColor: '#fff5ef', padding: 15, justifyContent: 'center'}}>
 				<View style={{paddingTop: 10, flexDirection: 'column'}}>
 					<Form>
 						<Item>
-							<Input placeholder="Enter a Location Name Here"
+							<Input placeholder="Bathroom name"
 								onChangeText={(text) => this.setState({name: text})} />
 						</Item>
 						<Item>
-							<Input placeholder="Description"
+							<Input placeholder="Description about bathroom"
 								onChangeText={(text) => this.setState({desc: text})} />
 						</Item>
 					</Form>
