@@ -388,8 +388,6 @@ export default class MarkerInfo extends React.Component {
 						<Text style={{fontSize: 20, alignSelf: 'center', marginTop: 25}}>{this.state.rating} %</Text>
 						<View
 						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
 								marginBottom: 15,
 								flex: 2
 						  }}
@@ -408,8 +406,6 @@ export default class MarkerInfo extends React.Component {
 						</View>
 						<View
 						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
 							marginTop: 15,
 							marginBottom: 15,
 							flex: 2,
@@ -451,24 +447,24 @@ const styles = StyleSheet.create({
 	navButton: {
 		alignSelf: 'center',
 		marginTop: 15,
-		width: '50%',
+		width: 150,
 	},
 	quitButton: {
 		alignSelf: 'center',
 		marginTop: 15,
 		display: 'none',
-		width: '50%',
+		width: 150,
 	},
 	permaNav: {
 		alignSelf: 'center',
 		marginTop: 15,
-		width: '50%',
+		width: 150,
 	},
 	permaQuit: {
 		alignSelf: 'center',
 		marginTop: 15,
 		display: 'none',
-		width: '50%',
+		width: 150,
 	},
 	rateButton: {
 		alignSelf: 'center',
