@@ -325,7 +325,6 @@ export default class MarkerInfo extends React.Component {
 				if (data.Count == 0) {
 					return;
 				} else {
-					console.log(data)
 					this.setState({
 						comments: data.Items,
 					})
@@ -359,12 +358,21 @@ export default class MarkerInfo extends React.Component {
 						rating: 'No Rating'
 					});
 				} else {
-					this.setState({					// set states with old data
-						upvote: data.Items[0].upvote,
-						downvote: data.Items[0].downvote,
-						timestamp: data.Items[0].timestamp,
-						rating: ((data.Items[0].upvote/(data.Items[0].upvote + data.Items[0].downvote))*100).toFixed(2)
-					})
+					if ((data.Items[0].upvote + data.Items[0].downvote) == 0) {
+						this.setState({					// set states with old data
+							upvote: data.Items[0].upvote,
+							downvote: data.Items[0].downvote,
+							timestamp: data.Items[0].timestamp,
+							rating: 'No Rating'
+						});
+					} else {
+						this.setState({					// set states with old data
+							upvote: data.Items[0].upvote,
+							downvote: data.Items[0].downvote,
+							timestamp: data.Items[0].timestamp,
+							rating: ((data.Items[0].upvote/(data.Items[0].upvote + data.Items[0].downvote))*100).toFixed(2)
+						});
+					}
 				};
 			}
 		});
