@@ -176,7 +176,7 @@ export default class MarkerInfo extends React.Component {
 
 	// rate button handler
 	rateButtonPress = () => {
-		if ((this.state.upvote + this.state.downvote) > 1) {				// if there was already ratings data before
+		if (this.state.timestamp != '') {				// if there was already ratings data before
 			var params = {
 				TableName: 'toilets',
 				Key: {
