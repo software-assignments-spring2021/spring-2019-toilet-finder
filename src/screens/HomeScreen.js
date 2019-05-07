@@ -389,9 +389,6 @@ class HomeScreen extends React.Component {
               strokeWidth={2}
               strokeColor="red"/>
           </MapView>
-          <Button block style={{backgroundColor: '#EFE1B0'}}>
-            <Text style={{color:'black'}}>Find The Nearest Bathroom</Text>
-          </Button>
         </Container>
         </Drawer>
       );
