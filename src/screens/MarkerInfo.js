@@ -1,14 +1,16 @@
 import React from 'react';
-import {
-	StyleSheet,
-	View,
-	TouchableOpacity,
-	SafeAreaView,
-	ScrollView,
-	Dimensions,
-	AsyncStorage,
-	Image,
-	Alert
+import { 
+	StyleSheet, 
+	View, 
+	TouchableOpacity, 
+	SafeAreaView, 
+	ScrollView, 
+	Dimensions, 
+	AsyncStorage, 
+	Image, 
+	TextInput, 
+	Alert,
+	FlatList 
 } from 'react-native';
 import {
 	Container,
@@ -40,6 +42,23 @@ AWS.config.credentials = global.creds;
 //database connection
 var ddb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
+//Randomizer function to call when generating primary key
+function randomizer(){
+	let val = Math.floor(Math.random() * Math.floor(10));
+	val = val.toString();
+	return val;
+}
+
+function addKey(str){
+	let add = "-";
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+  add = add.concat(randomizer());
+	let key = str.concat(add);
+	return key;
+}
+
 // Builder design pattern
 function tagBuilder() {
 	return {
@@ -52,27 +71,14 @@ function tagBuilder() {
 		downvote: 0,
 		upPressed: false,
 		downPressed: false,
-		timestamp: '',
+		liked: false,
 		rating: '',
-		decription: ''
+		description: '',
+		comments: [],
+		comment: '',
+		longLat: '',
+		timestamp: ''
 	}
-}
-
-function randomizer(){
-	let val = Math.floor(Math.random() * Math.floor(10));
-	val = val.toString();
-	return val;
-}
-
-function addKey(str){
-	//Should randomize more after discussing with the team
-	let add = "-";
-	add = add.concat(randomizer());
-	add = add.concat(randomizer());
-	add = add.concat(randomizer());
-	add = add.concat(randomizer());
-	let key = str.concat(add);
-	return key;
 }
 
 export default class MarkerInfo extends React.Component {
@@ -80,6 +86,7 @@ export default class MarkerInfo extends React.Component {
 		super(props);
 		this.params = this.props.navigation.state.params;
 		this.state = tagBuilder();
+		this.state.longLat = this.params.longLat;
 	}
 
 	static navigationOptions = {
@@ -88,6 +95,30 @@ export default class MarkerInfo extends React.Component {
 			backgroundColor: '#EFE1B0'
 		}
 	};
+
+	writeComment = () => {
+		// unpacking variables to be stored in the DB
+		var now = Date.now().toString();
+
+		var params = {
+			TableName: "toilets",
+			Item: {
+				"longLat": this.params.longLat,
+				"timestamp": addKey(now),
+				"spec_type": "comment",
+				"comment": this.state.comment
+			}	
+		};
+
+		// sending data to the database
+		ddb.put(params, function(err, data) {
+			if (err) {
+				console.log("Error", err);
+			} else {
+				Alert.alert("Success! Comment has been added to location.");
+			}
+		});
+	}
 
 	// function handles upvote button presses
 	updateUpvotes = () => {
@@ -193,31 +224,33 @@ export default class MarkerInfo extends React.Component {
 
 
 	//Function to use for navigation
-  async getDirections(startLoc, destinationLoc) {
-  try {
-    //Fetching the route from google maps api
-    let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking&key=${ GOOGLE_MAPS_APIKEY }`)
+  	async getDirections(startLoc, destinationLoc) {
+	  try {
+	    //Fetching the route from google maps api
+	    let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ destinationLoc }&mode=walking&key=${ GOOGLE_MAPS_APIKEY }`)
 
-    let respJson = await resp.json();
-    respJson.routes[0].legs[0].steps[0].travel_mode = "WALKING";
-    //The line that connects the locations
-    let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-    let coords = points.map((point, index) => {
-        return  {
-            latitude : point[0],
-            longitude : point[1]
-        }
-    })
-    //Add the points, distance, and ETA for work
-    this.setState({coords: coords});
-    this.setState({distance: respJson.routes[0].legs[0].distance.text});
-    this.setState({eta: respJson.routes[0].legs[0].duration.text});
-    }
-    catch(error) {
-      alert(error)
-      return error
+	    let respJson = await resp.json();
+	    respJson.routes[0].legs[0].steps[0].travel_mode = "WALKING";
+	    //The line that connects the locations
+	    let points = Polyline.decode(respJson.routes[0].overview_polyline.points);
+	    let coords = points.map((point, index) => {
+	        return  {
+	            latitude : point[0],
+	            longitude : point[1]
+	        }
+	    })
+	    //Add the points, distance, and ETA for work
+	    this.setState({coords: coords});
+	    this.setState({distance: respJson.routes[0].legs[0].distance.text});
+	    this.setState({eta: respJson.routes[0].legs[0].duration.text});
+	    }
+	    catch(error) {
+	      alert(error)
+	      return error
+	  	}
   	}
-  }
+
+  	
 
 	componentDidMount() {
 			// query parameters
@@ -270,6 +303,37 @@ export default class MarkerInfo extends React.Component {
 			}
 		});
 
+		// query comments
+		var paramCom = {
+			TableName: "toilets",
+			ExpressionAttributeNames: {
+				"#comment": "comment"
+			},
+			ExpressionAttributeValues: {                  // set string for use in expressions
+				":latLong": this.params.longLat,
+				":spec": "comment"
+			},
+			KeyConditionExpression: "longLat = :latLong",  // partition key comparison
+			FilterExpression: "spec_type = :spec",          // filter my loc to get all locations
+			ProjectionExpression: "#comment"
+		};
+		ddb.query(paramCom, (err, data) => {
+			if (err) {
+				console.log(err);
+				return [];  // return empty array if no data so nothing breaks...
+			} else {
+				if (data.Count == 0) {
+					return;
+				} else {
+					console.log(data)
+					this.setState({
+						comments: data.Items,
+					})
+						// this.state.comments.push(this.state.comment.toString());
+				}
+			}
+		});
+
 		// query parameters
 		var ratingParams = {
 			TableName: "toilets",
@@ -315,6 +379,7 @@ export default class MarkerInfo extends React.Component {
 		this.getDirections(`${userLat}, ${userLong}`, `${lat}, ${long}`)
 	}
 
+
 	//On clicking navigate, change screens and show a polyline to guide user
 	onNav = () => {
 		//Calculate and change the latitude and longitude delta
@@ -359,11 +424,32 @@ export default class MarkerInfo extends React.Component {
 		global.navigated = 0;
 	}
 
-	checkIcons(state) {
-		if (state == false) {
-			return <Icon type="Ionicons" name='close' style={{size: 15}}/>
+	getStyleBaby() {
+		if (this.state.baby) {
+			return styles.tags;
 		} else {
-			return <Icon type="Ionicons" name='checkmark' style={{size: 15}}/>
+			return styles.tagsFalse;
+		}
+	}
+	getStyleDisabled() {
+		if (this.state.disabled) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+	getStylePay() {
+		if (this.state.paytouse) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
+		}
+	}
+	getStyleUnisex() {
+		if (this.state.unisex) {
+			return styles.tags;
+		} else {
+			return styles.tagsFalse;
 		}
 	}
 
@@ -381,52 +467,77 @@ export default class MarkerInfo extends React.Component {
 				}
 			}
 			return(
-				<Container style={{alignItems: 'center', backgroundColor: '#fff5ef'}}>
-					<Text style={{fontWeight: 'bold', fontSize: 30, paddingBottom: 15, paddingTop: 15}}>Bathroom: {this.params.name}</Text>
+				<Container style={{align: 'center', backgroundColor: '#fff5ef'}}>
 					<Content>
-						<Text>Description: {this.state.description}</Text>
-						<Text style={{fontSize: 20, alignSelf: 'center', marginTop: 25}}>{this.state.rating} %</Text>
-						<View
-						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
-								marginBottom: 15,
-								flex: 2
-						  }}
-						/>
-						<View style={{flexDirection: "row"}}>
-							<Button small success style={{marginRight: 10}}
-								onPress={this.updateUpvotes}><Text> Upvote </Text></Button>
-							<Button small danger
-								onPress={this.updateDownvotes}><Text> Downvote </Text></Button>
+						<View style={{flex: 1, flexDirection: "row", marginLeft: 20, marginRight: 20}}>
+							<Text style={{flex: 2, fontWeight: 'bold', fontSize: 30, paddingTop: 15}}>{this.params.name}</Text>
+							<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end', width: '25%'}}>
+								<Button block light style={styles.navButton}onPress={this.onNav}>
+									<Text>Navigate</Text>
+								</Button>
+								<Button block light style={styles.quitButton}onPress={this.onQuit}>
+									<Text>Quit</Text>
+								</Button>
+							</View>
 						</View>
-						<View style={{alignItems: 'center'}}>
-							<Button style={styles.rateButton}
-								onPress={this.rateButtonPress}>
-								<Text> Rate! </Text>
+						<Text style={{fontSize: 20, marginLeft: 20}}>{this.state.rating} %</Text>
+						<View style={{flexDirection: "row", padding: 5, justifyContent: 'center'}}>
+							<Button small success onPress={this.updateUpvotes}>
+								<Text> Upvote </Text>
+							</Button>
+							<Button small style={{marginLeft: 3}} danger onPress={this.updateDownvotes}>
+								<Text> Downvote </Text>
+							</Button>
+							<Button small style={{marginLeft: 3}} onPress={this.rateButtonPress}>
+								<Text>Rate!</Text>
 							</Button>
 						</View>
-						<View
-						  style={{
-						    borderBottomColor: 'black',
-						    borderBottomWidth: 1,
-								marginTop: 15,
-								marginBottom: 15,
-								flex: 2
-						  }}
-						/>
-							<Text>Baby: {this.checkIcons(this.state.baby)}</Text>
-							<Text>Handicap Accessible: {this.checkIcons(this.state.disabled)}</Text>
-							<Text>Pay to Use: {this.checkIcons(this.state.paytouse)}</Text>
-							<Text>Unisex: {this.checkIcons(this.state.unisex)}</Text>
-							<Button block light style={styles.navButton}onPress={this.onNav}>
-								<Text>Navigate</Text>
-							</Button>
-							<Button block light style={styles.quitButton}onPress={this.onQuit}>
-								<Text>Quit Navigation</Text>
-							</Button>
-							<Text>Distance: {this.state.distance}</Text>
-							<Text>ETA: {this.state.eta}</Text>
+						<View style={{flexDirection: "row", marginLeft: 20, marginRight: 20}}>
+							<View style={{width: '50%'}}>
+								<Text>Distance: {this.state.distance}</Text>
+							</View>
+							<View style={{width: '50%'}}>
+								<Text>ETA: {this.state.eta}</Text>
+							</View>
+						</View>
+						<ScrollView style={{marginLeft: 20, marginRight: 20}}>
+							<Text style={{flex: 1, flexWrap: 'wrap', paddingTop: 10}}>{this.state.description}</Text>
+							<View style={{flexDirection: "row"}}>
+								<Text style={this.getStyleBaby()}> Baby </Text>
+								<Text style={this.getStyleDisabled()}> Handicap </Text>
+								<Text style={this.getStylePay()}> Pay to Use </Text>
+								<Text style={this.getStyleUnisex()}> Unisex </Text>
+							</View>
+							<View style={{
+							    borderBottomColor: 'black',
+							    borderBottomWidth: 1,
+									paddingTop: 5
+							  }}
+							/>
+							<FlatList
+								data={this.state.comments}
+								renderItem={({item}) => <Text>{item.comment}</Text>}
+							/>
+							<View style={{
+							    borderBottomColor: 'black',
+							    borderBottomWidth: 1,
+									paddingTop: 5
+							  }}
+							/>
+							<View style={{paddingTop: 5}}>
+								<Text>Used this toilet before? Leave a comment!</Text>
+								<Text>Comment: </Text>
+								<TextInput	//text input box for comment on location
+									style={{height: 80, borderColor: 'gray', borderWidth: 1}}
+									onChangeText={(text) => this.setState({comment: text})}
+								/>
+							</View>
+							<View style={{flexDirection: "row", paddingTop: 3, justifyContent: 'center'}}>
+								<Button style={{alignItems: 'center'}} onPress = {this.writeComment}>
+								<Text style={{fontSize: 20}}>Submit</Text>
+								</Button>
+							</View>
+						</ScrollView>
 					</Content>
 				</Container>
 			);
@@ -444,30 +555,52 @@ export default class MarkerInfo extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	comments: {
+		flex: 1,
+    margin: 20,
+    backgroundColor: '#FFFCE9',
+    margin: 10,
+    textAlign: 'left',
+    fontSize: 20,
+    paddingTop: 70
+	},
+	tagsFalse: {
+		margin: 5,
+		fontSize: 16,
+		backgroundColor: '#FFD7D7',
+		textAlign: 'center',
+		borderColor: 'black',
+		marginBottom: 14,
+		borderWidth: 1,
+		height: 35
+	},
+	tags: {
+		margin: 5,
+		backgroundColor: '#E0F6DC',
+		textAlign: 'center',
+		fontSize: 16,
+		height: 35,
+		marginBottom: 14,
+		borderColor: 'black',
+		borderWidth: 1
+	},
 	load: {
 		height: 200,
-		width: 200,
+		width: 200
 	},
 	navButton: {
-		alignContent: 'center',
+		fontSize: 15,
 		marginTop: 15,
 	},
 	quitButton: {
-		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
 	},
 	permaNav: {
-		alignContent: 'center',
 		marginTop: 15,
 	},
 	permaQuit: {
-		alignContent: 'center',
 		marginTop: 15,
 		display: 'none'
-	},
-	rateButton: {
-		alignSelf: 'center',
-		marginTop: 15,
 	}
 });
