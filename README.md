@@ -26,7 +26,7 @@ Currently there is no .apk or iOS app file available. This application is still 
 
 After installing Expo on your computer and phone make sure you are still in the src folder and run the following command
 
-```npm start```
+```npm start``` or ```expo start --tunnel```
 
 This will start the application as well as start expo. Now open the Expo app on your phone and scan the QR code that appears in your terminal. This should link the expo app with the application now running on your computer.
 
