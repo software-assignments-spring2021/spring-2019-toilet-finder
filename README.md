@@ -20,7 +20,21 @@ Once you are in the src folder run the command
 
 This should install all project dependencies.
 
-Currently there is no .apk or iOS app file available. This application is still in the build phase and in order to run this app on your phone you will need to install Expo. Instructions for running this app using expo can be found on the React-Native getting started page here 
+Currently there is no .apk or iOS app file available. This application is still in the build phase and in order to run this app on your phone you will need to install Expo Client on your mobile device as well as the Expo-cli on your machine. 
+
+Assuming you have Node 10+ installed, you can use npm to install the expo-cli
+
+```npm install -g expo-cli```
+
+The Expo Client for Android can be found here 
+
+<https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en_US>
+
+The Expo Client for iOS looks like this on the App Store
+
+<https://itunes.apple.com/us/app/expo-client/id982107779?mt=8>
+
+More detailed instructions for running this app using expo can be found on the React-Native getting started page here if needed
 
 <https://facebook.github.io/react-native/docs/getting-started>
 
